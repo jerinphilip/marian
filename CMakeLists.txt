@@ -216,7 +216,10 @@ else(MSVC)
   set(CMAKE_C_FLAGS_PROFILE         "${CMAKE_C_FLAGS_RELEASE} -pg")
   set(CMAKE_C_FLAGS_PROFGEN         "${CMAKE_C_FLAGS_RELEASE} -fprofile-generate -fprofile-correction")
   set(CMAKE_C_FLAGS_PROFUSE         "${CMAKE_C_FLAGS_RELEASE} -fprofile-use -fprofile-correction")
+
+
 endif(MSVC)
+
 
 # with gcc 7.0 and above we need to mark fallthrough in switch case statements
 # that can be done in comments for backcompat, but CCACHE removes comments.
@@ -233,6 +236,9 @@ if(USE_SENTENCEPIECE)
   LIST(APPEND CUDA_NVCC_FLAGS -DUSE_SENTENCEPIECE; )
   set(EXT_LIBS ${EXT_LIBS} sentencepiece sentencepiece_train)
 endif()
+
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUSE_ABSEIL")
 
 if(USE_ONNX)
   message(STATUS "Enabling experimental ONNX support")

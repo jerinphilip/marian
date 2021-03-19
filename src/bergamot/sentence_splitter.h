@@ -1,10 +1,10 @@
 #ifndef SRC_BERGAMOT_SENTENCE_SPLITTER_H_
 #define SRC_BERGAMOT_SENTENCE_SPLITTER_H_
 
+#include <string>
 #include "common/options.h"
 #include "data/types.h"
-#include "ssplit.h"
-#include <string>
+#include "ssplit/ssplit.h"
 
 namespace marian {
 namespace bergamot {
@@ -25,7 +25,7 @@ private:
   ug::ssplit::SentenceStream::splitmode string2splitmode(const std::string &m);
 };
 
-} // namespace bergamot
-} // namespace marian
+}  // namespace bergamot
+}  // namespace marian
 
-#endif //  SRC_BERGAMOT_SENTENCE_SPLITTER_H_
+#endif  //  SRC_BERGAMOT_SENTENCE_SPLITTER_H_

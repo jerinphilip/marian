@@ -7,6 +7,8 @@ include_directories(3rd_party/sentencepiece)
 include_directories(3rd_party/sentencepiece/third_party/protobuf-lite)
 include_directories(3rd_party/fbgemm/include)
 include_directories(3rd_party/intgemm)
+include_directories(3rd_party/ssplit-cpp/src)
+include_directories(3rd_party/ssplit-cpp/src/3rd-party/abseil-cpp)
 include_directories(${CMAKE_BINARY_DIR}/src/3rd_party/intgemm) # running cmake on the intgemm submodule triggers config file generation in this directory.
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/3rd_party)
 include_directories(${CMAKE_BINARY_DIR}/local/include)
@@ -110,18 +112,6 @@ set(MARIAN_SOURCES
   training/validator.cpp
   training/communicator.cpp
 
-  # Bergamot imports for replacement server
-  bergamot/request.cpp
-  bergamot/text_processor.cpp
-  bergamot/sentence_splitter.cpp
-  bergamot/multifactor_priority.cpp
-  bergamot/service.cpp
-  bergamot/response.cpp
-  bergamot/batcher.cpp
-  bergamot/service_base.cpp
-  bergamot/batch.cpp
-  bergamot/batch_translator.cpp
-  bergamot/sentence_ranges.cpp
 
   # this is only compiled to catch build errors
   microsoft/quicksand.cpp
@@ -240,15 +230,8 @@ if (NOT COMPILE_LIBRARY_ONLY)
   set_target_properties(marian_conv PROPERTIES OUTPUT_NAME marian-conv)
   target_compile_options(marian_conv PRIVATE ${ALL_WARNINGS})
 
-  add_executable(marian_decoder_new command/marian_decoder_new.cpp)
-  set_target_properties(marian_decoder_new PROPERTIES OUTPUT_NAME marian_decoder_new)
-  target_compile_options(marian_decoder_new PRIVATE ${ALL_WARNINGS})
 
-  add_executable(marian_service_test_app command/marian_service_test_app.cpp)
-  set_target_properties(marian_service_test_app PROPERTIES OUTPUT_NAME marian_service_test_app)
-  target_compile_options(marian_service_test_app PRIVATE ${ALL_WARNINGS})
-
-  set(EXECUTABLES ${EXECUTABLES} marian_train marian_decoder marian_scorer marian_vocab marian_conv marian_decoder_new marian_service_test_app)
+  set(EXECUTABLES ${EXECUTABLES} marian_train marian_decoder marian_scorer marian_vocab marian_conv)
 
   # marian.zip and marian.tgz
   # This combines marian, marian_decoder in a single ZIP or TAR file for
@@ -320,3 +303,38 @@ if(GENERATE_MARIAN_INSTALL_TARGETS)
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   )
 endif(GENERATE_MARIAN_INSTALL_TARGETS)
+
+# Bergamot imports for replacement server
+set(BERGAMOT_SOURCES
+  bergamot/request.cpp
+  bergamot/text_processor.cpp
+  bergamot/sentence_splitter.cpp
+  bergamot/multifactor_priority.cpp
+  bergamot/service.cpp
+  bergamot/response.cpp
+  bergamot/batcher.cpp
+  bergamot/service_base.cpp
+  bergamot/batch.cpp
+  bergamot/batch_translator.cpp
+  bergamot/sentence_ranges.cpp
+)
+
+add_library(bergamot STATIC ${BERGAMOT_SOURCES})
+target_compile_options(bergamot PRIVATE ${ALL_WARNINGS})
+target_link_libraries(bergamot marian ssplit)
+add_executable(marian_decoder_new command/marian_decoder_new.cpp)
+set_target_properties(marian_decoder_new PROPERTIES OUTPUT_NAME marian_decoder_new)
+target_compile_options(marian_decoder_new PRIVATE ${ALL_WARNINGS})
+
+add_executable(marian_service_test_app command/marian_service_test_app.cpp)
+set_target_properties(marian_service_test_app PROPERTIES OUTPUT_NAME marian_service_test_app)
+target_compile_options(marian_service_test_app PRIVATE ${ALL_WARNINGS})
+
+set(BERGAMOT_EXECUTABLES  marian_decoder_new marian_service_test_app)
+foreach(exec ${BERGAMOT_EXECUTABLES})
+target_link_libraries(${exec} marian bergamot ssplit)
+if(CUDA_FOUND)
+target_link_libraries(${exec} marian_cuda)
+endif(CUDA_FOUND)
+set_target_properties(${exec} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
+endforeach(exec)
