@@ -50,6 +50,16 @@ public:
                bool addEOS = true,
                bool inference = false) const;
 
+  Words encodeWithByteRanges(const string_view &line,
+                               std::vector<string_view> &byteRanges,
+                               bool addEOS = true,
+                               bool inference = false) const;
+
+  void decodeWithByteRanges(const Words & sentence,
+                               std::string & line,
+                               std::vector<string_view> &byteRanges,
+                               bool ignoreEOS = true) const;
+
   // convert sequence of token ids to single line, can perform detokenization
   std::string decode(const Words& sentence,
                      bool ignoreEOS = true) const;
