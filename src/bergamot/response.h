@@ -47,8 +47,8 @@ public:
   Response(Response &&other)
       : source(std::move(other.source)),
         target(std::move(other.target)),
-        alignments(std::move(other.alignments)),
         qualityScores(std::move(other.qualityScores)),
+        alignments(std::move(other.alignments)),
         histories_(std::move(other.histories_)){};
 
   // The following copy bans are not stricitly required anymore since Annotation

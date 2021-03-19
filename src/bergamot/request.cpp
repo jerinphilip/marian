@@ -11,25 +11,36 @@ namespace marian {
 namespace bergamot {
 
 // -----------------------------------------------------------------
-Request::Request(size_t Id, size_t lineNumberBegin,
-                 std::vector<Ptr<Vocab const>> &vocabs, AnnotatedBlob &&source,
-                 Segments &&segments, std::promise<Response> responsePromise)
-    : Id_(Id), lineNumberBegin_(lineNumberBegin), vocabs_(&vocabs),
-      source_(std::move(source)), segments_(std::move(segments)),
-      response_(std::move(responsePromise)) {
-
+Request::Request(size_t Id,
+                 size_t lineNumberBegin,
+                 std::vector<Ptr<Vocab const>> &vocabs,
+                 AnnotatedBlob &&source,
+                 Segments &&segments,
+                 std::promise<Response> responsePromise)
+    : Id_(Id),
+      lineNumberBegin_(lineNumberBegin),
+      source_(std::move(source)),
+      segments_(std::move(segments)),
+      response_(std::move(responsePromise)),
+      vocabs_(&vocabs) {
   counter_ = segments_.size();
   histories_.resize(segments_.size(), nullptr);
 }
 
-size_t Request::lineNumberBegin() const { return lineNumberBegin_; }
-size_t Request::numSegments() const { return segments_.size(); }
+size_t Request::lineNumberBegin() const {
+  return lineNumberBegin_;
+}
+size_t Request::numSegments() const {
+  return segments_.size();
+}
 
 size_t Request::segmentTokens(size_t index) const {
   return (segments_[index].size());
 }
 
-Segment Request::getSegment(size_t index) const { return segments_[index]; }
+Segment Request::getSegment(size_t index) const {
+  return segments_[index];
+}
 
 void Request::processHistory(size_t index, Ptr<History> history) {
   // Concurrently called by multiple workers as a history from translation is
@@ -38,7 +49,7 @@ void Request::processHistory(size_t index, Ptr<History> history) {
 
   // In case this is last request in, completeRequest is called, which sets the
   // value of the promise.
-  if (--counter_ == 0) {
+  if(--counter_ == 0) {
     completeRequest();
   }
 }
@@ -80,7 +91,7 @@ Segment RequestSentence::getUnderlyingSegment() const {
 
 bool operator<(const RequestSentence &a, const RequestSentence &b) {
   // Operator overload for usage in priority-queue / set.
-  if (a.request_ == b.request_) {
+  if(a.request_ == b.request_) {
     return a.index_ < b.index_;
   }
   return a.request_ < b.request_;
@@ -88,5 +99,5 @@ bool operator<(const RequestSentence &a, const RequestSentence &b) {
 
 // ----------------------------------------------------------------------
 
-} // namespace bergamot
-} // namespace marian
+}  // namespace bergamot
+}  // namespace marian
