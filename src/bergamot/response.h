@@ -18,9 +18,9 @@ namespace bergamot {
 /// internals but is brought here to maintain translator
 /// agnosticism/independence.
 struct Point {
-  size_t src; // Index pointing to source ByteRange
-  size_t tgt; // Index pointing to target ByteRange
-  float prob; // Score between [0, 1] on indicating degree of alignment.
+  size_t src;  // Index pointing to source ByteRange
+  size_t tgt;  // Index pointing to target ByteRange
+  float prob;  // Score between [0, 1] on indicating degree of alignment.
 };
 
 typedef std::vector<Point> Alignment;
@@ -41,12 +41,12 @@ class Response {
   // ByteRanges.
 
 public:
-  Response(AnnotatedBlob &&source, Histories &&histories,
-           std::vector<Ptr<Vocab const>> &vocabs);
+  Response(AnnotatedBlob &&source, Histories &&histories, std::vector<Ptr<Vocab const>> &vocabs);
 
   // Move constructor.
   Response(Response &&other)
-      : source(std::move(other.source)), target(std::move(other.target)),
+      : source(std::move(other.source)),
+        target(std::move(other.target)),
         alignments(std::move(other.alignments)),
         qualityScores(std::move(other.qualityScores)),
         histories_(std::move(other.histories_)){};
@@ -58,28 +58,26 @@ public:
   Response(const Response &) = delete;
   Response &operator=(const Response &) = delete;
 
-  const size_t size() const { return source.numSentences(); }
+  size_t size() const { return source.numSentences(); }
 
-  AnnotatedBlob source; /// source-text, source.blob contains source
-                        /// text. source.annotation holds the annotation.
-  AnnotatedBlob target; /// translated-text, target.blob contains translated
-                        /// text. target.annotation holds the annotation.
-  std::vector<Quality>
-      qualityScores; /// -logProb of each word and negative log likelihood
-                     /// of sequence (sentence), for each sentence processed by
-                     /// the translator. Indices correspond to ranges accessible
-                     /// through annotation
-  std::vector<Alignment>
-      alignments; /// Alignments between source and target. Each Alignment is a
-                  /// sparse matrix representation with indices corresponding
-                  /// to ranges accessible through Annotations.
+  AnnotatedBlob source;                /// source-text, source.blob contains source
+                                       /// text. source.annotation holds the annotation.
+  AnnotatedBlob target;                /// translated-text, target.blob contains translated
+                                       /// text. target.annotation holds the annotation.
+  std::vector<Quality> qualityScores;  /// -logProb of each word and negative log likelihood
+                                       /// of sequence (sentence), for each sentence processed by
+                                       /// the translator. Indices correspond to ranges accessible
+                                       /// through annotation
+  std::vector<Alignment> alignments;   /// Alignments between source and target. Each Alignment is a
+                                       /// sparse matrix representation with indices corresponding
+                                       /// to ranges accessible through Annotations.
 
   const Histories &histories() const { return histories_; }
 
 private:
   Histories histories_;
 };
-} // namespace bergamot
-} // namespace marian
+}  // namespace bergamot
+}  // namespace marian
 
-#endif // SRC_BERGAMOT_RESPONSE_H_
+#endif  // SRC_BERGAMOT_RESPONSE_H_

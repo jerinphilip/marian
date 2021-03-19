@@ -1,10 +1,10 @@
 #ifndef BERGAMOT_SENTENCE_RANGES_H_
 #define BERGAMOT_SENTENCE_RANGES_H_
 
-#include "data/types.h"
 #include <cassert>
 #include <utility>
 #include <vector>
+#include "data/types.h"
 
 namespace marian {
 namespace bergamot {
@@ -14,7 +14,7 @@ namespace bergamot {
 struct ByteRange {
   size_t begin_byte_offset;
   size_t end_byte_offset;
-  const size_t size() const { return end_byte_offset - begin_byte_offset + 1; }
+  size_t size() const { return end_byte_offset - begin_byte_offset + 1; }
 };
 
 /// An Annotation is a collection of ByteRanges used to denote  ancillary
@@ -73,14 +73,11 @@ public:
   // AnnotatedBlob(std::string blob) : blob(blob){};
   AnnotatedBlob(std::string &&blob) : blob(std::move(blob)){};
   AnnotatedBlob(AnnotatedBlob &&annotatedBlob)
-      : blob(std::move(annotatedBlob.blob)),
-        annotation(std::move(annotatedBlob.annotation)) {}
+      : blob(std::move(annotatedBlob.blob)), annotation(std::move(annotatedBlob.annotation)) {}
 
   /// Returns the number of sentences in the annotation structure.
-  const size_t numSentences() const { return annotation.numSentences(); }
-  const size_t numWords(size_t sentenceIdx) const {
-    return annotation.numWords(sentenceIdx);
-  }
+  size_t numSentences() const { return annotation.numSentences(); }
+  size_t numWords(size_t sentenceIdx) const { return annotation.numWords(sentenceIdx); }
 
   /// Adds a sentence, used to load from SentencePiece annotations conveniently.
   void addSentence(std::vector<string_view> &wordRanges);
@@ -100,7 +97,7 @@ private:
   string_view asStringView(const ByteRange &byteRange) const;
 };
 
-} // namespace bergamot
-} // namespace marian
+}  // namespace bergamot
+}  // namespace marian
 
-#endif //  BERGAMOT_SENTENCE_RANGES_H_
+#endif  //  BERGAMOT_SENTENCE_RANGES_H_
