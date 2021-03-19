@@ -110,6 +110,19 @@ set(MARIAN_SOURCES
   training/validator.cpp
   training/communicator.cpp
 
+  # Bergamot imports for replacement server
+  bergamot/request.cpp
+  bergamot/text_processor.cpp
+  bergamot/sentence_splitter.cpp
+  bergamot/multifactor_priority.cpp
+  bergamot/service.cpp
+  bergamot/response.cpp
+  bergamot/batcher.cpp
+  bergamot/service_base.cpp
+  bergamot/batch.cpp
+  bergamot/batch_translator.cpp
+  bergamot/sentence_ranges.cpp
+
   # this is only compiled to catch build errors
   microsoft/quicksand.cpp
   microsoft/cosmos.cpp
@@ -227,7 +240,15 @@ if (NOT COMPILE_LIBRARY_ONLY)
   set_target_properties(marian_conv PROPERTIES OUTPUT_NAME marian-conv)
   target_compile_options(marian_conv PRIVATE ${ALL_WARNINGS})
 
-  set(EXECUTABLES ${EXECUTABLES} marian_train marian_decoder marian_scorer marian_vocab marian_conv)
+  add_executable(marian_decoder_new command/marian_decoder_new.cpp)
+  set_target_properties(marian_decoder_new PROPERTIES OUTPUT_NAME marian_decoder_new)
+  target_compile_options(marian_decoder_new PRIVATE ${ALL_WARNINGS})
+
+  add_executable(marian_service_test_app command/marian_service_test_app.cpp)
+  set_target_properties(marian_service_test_app PROPERTIES OUTPUT_NAME marian_service_test_app)
+  target_compile_options(marian_service_test_app PRIVATE ${ALL_WARNINGS})
+
+  set(EXECUTABLES ${EXECUTABLES} marian_train marian_decoder marian_scorer marian_vocab marian_conv marian_decoder_new marian_service_test_app)
 
   # marian.zip and marian.tgz
   # This combines marian, marian_decoder in a single ZIP or TAR file for
