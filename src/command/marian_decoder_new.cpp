@@ -10,9 +10,9 @@
 #include "translator/history.h"
 #include "translator/output_collector.h"
 #include "translator/output_printer.h"
-#include "translator/parser.h"
-#include "translator/response.h"
-#include "translator/service.h"
+#include "bergamot/parser.h"
+#include "bergamot/response.h"
+#include "bergamot/service.h"
 
 void marian_decoder_minimal(const marian::Histories &histories,
                             marian::Ptr<marian::Vocab const> targetVocab,

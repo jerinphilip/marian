@@ -30,7 +30,7 @@ SentenceSplitter::SentenceSplitter(marian::Ptr<marian::Options> options)
 
 ug::ssplit::SentenceStream
 SentenceSplitter::createSentenceStream(const string_view &input) {
-  std::string_view input_converted(input.data(), input.size());
+  ug::ssplit::string_view input_converted(input.data(), input.size());
   return std::move(
       ug::ssplit::SentenceStream(input_converted, this->ssplit_, mode_));
 }

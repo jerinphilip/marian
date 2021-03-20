@@ -35,8 +35,8 @@ public:
   void initialize();
 
 private:
-  Ptr<Options> options_;
   DeviceId device_;
+  Ptr<Options> options_;
   std::vector<Ptr<Vocab const>> *vocabs_;
   Ptr<ExpressionGraph> graph_;
   std::vector<Ptr<Scorer>> scorers_;

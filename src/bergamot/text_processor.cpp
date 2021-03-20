@@ -22,14 +22,14 @@ TextProcessor::TextProcessor(std::vector<Ptr<Vocab const>> &vocabs,
 
   max_length_break_ = options->get<int>("max-length-break");
   max_length_break_ = max_length_break_ - 1;
-  ABORT_IF(max_length_break_ < 0, "max-length-break cannot be < 0");
+  ABORT_IF(max_length_break_ == 0, "max-length-break cannot be = 0");
 }
 
 void TextProcessor::process(AnnotatedBlob &source, Segments &segments) {
 
   string_view query = string_view(source.blob);
   auto sentenceStream = sentence_splitter_.createSentenceStream(query);
-  std::string_view sentenceStringPiece;
+  ug::ssplit::string_view sentenceStringPiece;
 
   while (sentenceStream >> sentenceStringPiece) {
     marian::string_view sentence(sentenceStringPiece.data(),

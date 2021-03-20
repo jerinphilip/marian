@@ -51,6 +51,7 @@ void Service::enqueue() {
 
 void Service::stop() {
   for (auto &worker : workers_) {
+    (void)worker; // Silence compiler warning while maintaining idempotency.
     Batch poison = Batch::poison();
     pcqueue_.ProduceSwap(poison);
   }
