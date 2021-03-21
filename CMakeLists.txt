@@ -237,8 +237,9 @@ if(USE_SENTENCEPIECE)
   set(EXT_LIBS ${EXT_LIBS} sentencepiece sentencepiece_train)
 endif()
 
-
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUSE_ABSEIL")
+LIST(APPEND CUDA_NVCC_FLAGS -DUSE_ABSEIL;)
+set(EXT_LIBS ${EXT_LIBS} ssplit)
 
 if(USE_ONNX)
   message(STATUS "Enabling experimental ONNX support")

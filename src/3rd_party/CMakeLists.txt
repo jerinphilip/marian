@@ -125,9 +125,8 @@ if(USE_SENTENCEPIECE)
   endif(GENERATE_MARIAN_INSTALL_TARGETS)
 endif(USE_SENTENCEPIECE)
 
-set(USE_ABSEIL ON)
-set(USE_INTERNAL_PCRE2 ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUSE_ABSEIL")
+set(SSPLIT_USE_CXX11 ON CACHE BOOL "Enable C++11 compilation on ssplit")
+set(SSPLIT_COMPILE_LIBRARY_ONLY ON CACHE BOOL "Compile ssplit library only")
 add_subdirectory(./ssplit-cpp)
 
 include_directories(./SQLiteCpp/include)
