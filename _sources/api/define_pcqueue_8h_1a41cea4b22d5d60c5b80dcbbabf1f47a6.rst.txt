@@ -1,0 +1,13 @@
+.. _exhale_define_pcqueue_8h_1a41cea4b22d5d60c5b80dcbbabf1f47a6:
+
+Define UTIL_UNLIKELY
+====================
+
+- Defined in :ref:`file_src_bergamot_pcqueue.h`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: UTIL_UNLIKELY

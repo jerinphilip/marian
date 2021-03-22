@@ -1,0 +1,13 @@
+.. _exhale_function_pcqueue_8h_1aa2de1e7c8107873cc8569bac95c8fa02:
+
+Function marian::bergamot::WaitSemaphore
+========================================
+
+- Defined in :ref:`file_src_bergamot_pcqueue.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: marian::bergamot::WaitSemaphore(Semaphore&)

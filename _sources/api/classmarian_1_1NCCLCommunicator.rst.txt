@@ -1,0 +1,25 @@
+.. _exhale_class_classmarian_1_1NCCLCommunicator:
+
+Class NCCLCommunicator
+======================
+
+- Defined in :ref:`file_src_training_communicator_nccl.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public marian::ICommunicator`` (:ref:`exhale_class_classmarian_1_1ICommunicator`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: marian::NCCLCommunicator
+   :members:
+   :protected-members:
+   :undoc-members:

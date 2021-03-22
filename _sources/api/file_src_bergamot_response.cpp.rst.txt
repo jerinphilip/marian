@@ -1,0 +1,54 @@
+
+.. _file_src_bergamot_response.cpp:
+
+File response.cpp
+=================
+
+|exhale_lsh| :ref:`Parent directory <dir_src_bergamot>` (``src/bergamot``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``src/bergamot/response.cpp``)
+------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_src_bergamot_response.cpp.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``common/logging.h`` (:ref:`file_src_common_logging.h`)
+
+- ``data/alignment.h`` (:ref:`file_src_data_alignment.h`)
+
+- ``response.h`` (:ref:`file_src_bergamot_response.h`)
+
+- ``sentence_ranges.h`` (:ref:`file_src_bergamot_sentence_ranges.h`)
+
+- ``utility``
+
+
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_marian`
+
+- :ref:`namespace_marian__bergamot`
+

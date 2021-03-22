@@ -1,0 +1,62 @@
+
+.. _file_src_command_marian_service_test_app.cpp:
+
+File marian_service_test_app.cpp
+================================
+
+|exhale_lsh| :ref:`Parent directory <dir_src_command>` (``src/command``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``src/command/marian_service_test_app.cpp``)
+--------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_src_command_marian_service_test_app.cpp.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``bergamot/parser.h`` (:ref:`file_src_bergamot_parser.h`)
+
+- ``bergamot/response.h`` (:ref:`file_src_bergamot_response.h`)
+
+- ``bergamot/service.h`` (:ref:`file_src_bergamot_service.h`)
+
+- ``common/definitions.h`` (:ref:`file_src_common_definitions.h`)
+
+- ``common/utils.h`` (:ref:`file_src_common_utils.h`)
+
+- ``cstdlib``
+
+- ``future``
+
+- ``iostream``
+
+- ``marian.h`` (:ref:`file_src_marian.h`)
+
+- ``sstream``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_marian__service__test__app_8cpp_1a0ddf1224851353fc92bfbff6f499fa97`
+

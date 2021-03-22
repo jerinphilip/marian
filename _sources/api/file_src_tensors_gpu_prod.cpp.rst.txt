@@ -1,0 +1,82 @@
+
+.. _file_src_tensors_gpu_prod.cpp:
+
+File prod.cpp
+=============
+
+|exhale_lsh| :ref:`Parent directory <dir_src_tensors_gpu>` (``src/tensors/gpu``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``src/tensors/gpu/prod.cpp``)
+-----------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_src_tensors_gpu_prod.cpp.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``cublas_v2.h``
+
+- ``tensors/gpu/backend.h`` (:ref:`file_src_tensors_gpu_backend.h`)
+
+- ``tensors/gpu/cuda_helpers.h`` (:ref:`file_src_tensors_gpu_cuda_helpers.h`)
+
+- ``tensors/gpu/prod.h`` (:ref:`file_src_tensors_gpu_prod.h`)
+
+
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_marian`
+
+- :ref:`namespace_marian__gpu`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_struct_structmarian_1_1gpu_1_1TypedGemm`
+
+- :ref:`exhale_struct_structmarian_1_1gpu_1_1TypedGemm_3_01float_00_01float_01_4`
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_gpu_2prod_8cpp_1af9496ed89f5128b43df3265507f9848e`
+
+- :ref:`exhale_function_gpu_2prod_8cpp_1a0d73e4242d6621bce259097913193797`
+
+- :ref:`exhale_function_gpu_2prod_8cpp_1adbce1c41007bd3757617fd34a8c12ee7`
+
+- :ref:`exhale_function_gpu_2prod_8cpp_1a2a83e3d0f6b33a30e54841eace4848ee`
+
+- :ref:`exhale_function_gpu_2prod_8cpp_1a28437bb8350814cc6de28cfdac215e66`
+
+- :ref:`exhale_function_gpu_2prod_8cpp_1af1f337e95e06f8828d8ad77c58af7b10`
+
+- :ref:`exhale_function_gpu_2prod_8cpp_1a59dd774e0bc29a6b829a891f613c40c9`
+
+- :ref:`exhale_function_gpu_2prod_8cpp_1aed7344f774b0eaff24e4245ba469b274`
+

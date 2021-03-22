@@ -1,0 +1,25 @@
+.. _exhale_class_classmarian_1_1bergamot_1_1Service:
+
+Class Service
+=============
+
+- Defined in :ref:`file_src_bergamot_service.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public marian::bergamot::ServiceBase`` (:ref:`exhale_class_classmarian_1_1bergamot_1_1ServiceBase`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: marian::bergamot::Service
+   :members:
+   :protected-members:
+   :undoc-members:

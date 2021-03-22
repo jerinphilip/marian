@@ -1,0 +1,13 @@
+.. _exhale_typedef_pcqueue_8h_1aef632f08268676b44935dddd74bf0db5:
+
+Typedef marian::bergamot::Semaphore
+===================================
+
+- Defined in :ref:`file_src_bergamot_pcqueue.h`
+
+
+Typedef Documentation
+---------------------
+
+
+.. doxygentypedef:: marian::bergamot::Semaphore

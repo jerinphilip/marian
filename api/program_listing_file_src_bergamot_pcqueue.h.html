@@ -1,0 +1,510 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Program Listing for File pcqueue.h &mdash; Marian NMT v1.10.9 2021-03-21 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+    <link rel="canonical" href="http://marian-nmt.github.io/docs/api/api/program_listing_file_src_bergamot_pcqueue.h.html" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Marian NMT
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v1.10.9
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../graph.html">Expression graphs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operators.html">Operations in the Expression Graph</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_index.html">Library API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">How to contribute to Marian</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Marian NMT</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Program Listing for File pcqueue.h</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/api/program_listing_file_src_bergamot_pcqueue.h.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-pcqueue-h">
+<span id="program-listing-file-src-bergamot-pcqueue-h"></span><h1>Program Listing for File pcqueue.h<a class="headerlink" href="#program-listing-for-file-pcqueue-h" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_src_bergamot_pcqueue.h.html#file-src-bergamot-pcqueue-h"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">src/bergamot/pcqueue.h</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifndef SRC_BERGAMOT_PCQUEUE_H_</span>
+<span class="cp">#define SRC_BERGAMOT_PCQUEUE_H_</span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;common/logging.h&quot;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;algorithm&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;cerrno&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;memory&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;mutex&gt;</span><span class="cp"></span>
+
+<span class="cp">#ifdef __APPLE__</span>
+<span class="cp">#include</span> <span class="cpf">&lt;mach/mach.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;mach/mach_traps.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;mach/semaphore.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;mach/task.h&gt;</span><span class="cp"></span>
+<span class="cp">#elif defined(__linux)</span>
+<span class="cp">#include</span> <span class="cpf">&lt;semaphore.h&gt;</span><span class="cp"></span>
+<span class="cp">#else</span>
+<span class="cp">#include</span> <span class="cpf">&lt;boost/interprocess/sync/interprocess_semaphore.hpp&gt;</span><span class="cp"></span>
+<span class="cp">#endif</span>
+
+<span class="cp">#if __GNUC__ &gt;= 3</span>
+<span class="cp">#define UTIL_UNLIKELY(x) __builtin_expect(!!(x), 0)</span>
+<span class="cp">#else</span>
+<span class="cp">#define UTIL_UNLIKELY(x) (x)</span>
+<span class="cp">#endif</span>
+
+<span class="k">namespace</span> <span class="n">marian</span> <span class="p">{</span>
+<span class="k">namespace</span> <span class="n">bergamot</span> <span class="p">{</span>
+
+<span class="cm">/* OS X Maverick and Boost interprocess were doing &quot;Function not implemented.&quot;</span>
+<span class="cm"> * So this is my own wrapper around the mach kernel APIs.</span>
+<span class="cm"> */</span>
+<span class="cp">#ifdef __APPLE__</span>
+
+<span class="k">class</span> <span class="nc">Semaphore</span> <span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="k">explicit</span> <span class="n">Semaphore</span><span class="p">(</span><span class="kt">int</span> <span class="n">value</span><span class="p">)</span> <span class="o">:</span> <span class="n">task_</span><span class="p">(</span><span class="n">mach_task_self</span><span class="p">())</span> <span class="p">{</span>
+    <span class="n">ABORT_IF</span><span class="p">(</span><span class="n">KERN_SUCCESS</span> <span class="o">!=</span>
+                 <span class="n">semaphore_create</span><span class="p">(</span><span class="n">task_</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">back_</span><span class="p">,</span> <span class="n">SYNC_POLICY_FIFO</span><span class="p">,</span> <span class="n">value</span><span class="p">),</span>
+             <span class="s">&quot;Could not create semaphore&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="o">~</span><span class="n">Semaphore</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">KERN_SUCCESS</span> <span class="o">!=</span> <span class="n">semaphore_destroy</span><span class="p">(</span><span class="n">task_</span><span class="p">,</span> <span class="n">back_</span><span class="p">))</span> <span class="p">{</span>
+      <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Could not destroy semaphore&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+      <span class="n">abort</span><span class="p">();</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">wait</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">ABORT_IF</span><span class="p">(</span><span class="n">KERN_SUCCESS</span> <span class="o">!=</span> <span class="n">semaphore_wait</span><span class="p">(</span><span class="n">back_</span><span class="p">),</span>
+             <span class="s">&quot;Wait for semaphore failed&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">post</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">ABORT_IF</span><span class="p">(</span><span class="n">KERN_SUCCESS</span> <span class="o">!=</span> <span class="n">semaphore_signal</span><span class="p">(</span><span class="n">back_</span><span class="p">),</span>
+             <span class="s">&quot;Could not post to semaphore&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
+
+<span class="k">private</span><span class="o">:</span>
+  <span class="n">semaphore_t</span> <span class="n">back_</span><span class="p">;</span>
+  <span class="n">task_t</span> <span class="n">task_</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="kr">inline</span> <span class="kt">void</span> <span class="n">WaitSemaphore</span><span class="p">(</span><span class="n">Semaphore</span> <span class="o">&amp;</span><span class="n">semaphore</span><span class="p">)</span> <span class="p">{</span> <span class="n">semaphore</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span> <span class="p">}</span>
+
+<span class="cp">#elif defined(__linux)</span>
+
+<span class="k">class</span> <span class="nc">Semaphore</span> <span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="k">explicit</span> <span class="n">Semaphore</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">ABORT_IF</span><span class="p">(</span><span class="n">sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sem_</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">value</span><span class="p">),</span> <span class="s">&quot;Could not create semaphore&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="o">~</span><span class="n">Semaphore</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="mi">-1</span> <span class="o">==</span> <span class="n">sem_destroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sem_</span><span class="p">))</span> <span class="p">{</span>
+      <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Could not destroy semaphore &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+      <span class="n">abort</span><span class="p">();</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">wait</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">UTIL_UNLIKELY</span><span class="p">(</span><span class="mi">-1</span> <span class="o">==</span> <span class="n">sem_wait</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sem_</span><span class="p">)))</span> <span class="p">{</span>
+      <span class="n">ABORT_IF</span><span class="p">(</span><span class="n">errno</span> <span class="o">!=</span> <span class="n">EINTR</span><span class="p">,</span> <span class="s">&quot;Wait for semaphore failed&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">post</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">ABORT_IF</span><span class="p">(</span><span class="mi">-1</span> <span class="o">==</span> <span class="n">sem_post</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sem_</span><span class="p">),</span> <span class="s">&quot;Could not post to semaphore&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
+
+<span class="k">private</span><span class="o">:</span>
+  <span class="n">sem_t</span> <span class="n">sem_</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="kr">inline</span> <span class="kt">void</span> <span class="n">WaitSemaphore</span><span class="p">(</span><span class="n">Semaphore</span> <span class="o">&amp;</span><span class="n">semaphore</span><span class="p">)</span> <span class="p">{</span> <span class="n">semaphore</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span> <span class="p">}</span>
+
+<span class="cp">#else</span>
+<span class="k">typedef</span> <span class="n">boost</span><span class="o">::</span><span class="n">interprocess</span><span class="o">::</span><span class="n">interprocess_semaphore</span> <span class="n">Semaphore</span><span class="p">;</span>
+
+<span class="kr">inline</span> <span class="kt">void</span> <span class="n">WaitSemaphore</span><span class="p">(</span><span class="n">Semaphore</span> <span class="o">&amp;</span><span class="n">on</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">try</span> <span class="p">{</span>
+      <span class="n">on</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span>
+      <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">boost</span><span class="o">::</span><span class="n">interprocess</span><span class="o">::</span><span class="n">interprocess_exception</span> <span class="o">&amp;</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">get_native_error</span><span class="p">()</span> <span class="o">!=</span> <span class="n">EINTR</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">throw</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="cp">#endif </span><span class="c1">// Apple</span>
+
+<span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="o">&gt;</span> <span class="k">class</span> <span class="nc">PCQueue</span> <span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="k">explicit</span> <span class="n">PCQueue</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">size</span><span class="p">)</span>
+      <span class="o">:</span> <span class="n">empty_</span><span class="p">(</span><span class="n">size</span><span class="p">),</span> <span class="n">used_</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">storage_</span><span class="p">(</span><span class="k">new</span> <span class="n">T</span><span class="p">[</span><span class="n">size</span><span class="p">]),</span>
+        <span class="n">end_</span><span class="p">(</span><span class="n">storage_</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="o">+</span> <span class="n">size</span><span class="p">),</span> <span class="n">produce_at_</span><span class="p">(</span><span class="n">storage_</span><span class="p">.</span><span class="n">get</span><span class="p">()),</span>
+        <span class="n">consume_at_</span><span class="p">(</span><span class="n">storage_</span><span class="p">.</span><span class="n">get</span><span class="p">())</span> <span class="p">{}</span>
+
+  <span class="c1">// Add a value to the queue.</span>
+  <span class="kt">void</span> <span class="n">Produce</span><span class="p">(</span><span class="k">const</span> <span class="n">T</span> <span class="o">&amp;</span><span class="n">val</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">WaitSemaphore</span><span class="p">(</span><span class="n">empty_</span><span class="p">);</span>
+    <span class="p">{</span>
+      <span class="n">std</span><span class="o">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">produce_lock</span><span class="p">(</span><span class="n">produce_at_mutex_</span><span class="p">);</span>
+      <span class="k">try</span> <span class="p">{</span>
+        <span class="o">*</span><span class="n">produce_at_</span> <span class="o">=</span> <span class="n">val</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">catch</span> <span class="p">(...)</span> <span class="p">{</span>
+        <span class="n">empty_</span><span class="p">.</span><span class="n">post</span><span class="p">();</span>
+        <span class="k">throw</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span><span class="o">++</span><span class="n">produce_at_</span> <span class="o">==</span> <span class="n">end_</span><span class="p">)</span>
+        <span class="n">produce_at_</span> <span class="o">=</span> <span class="n">storage_</span><span class="p">.</span><span class="n">get</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="n">used_</span><span class="p">.</span><span class="n">post</span><span class="p">();</span>
+  <span class="p">}</span>
+
+  <span class="c1">// Add a value to the queue, but swap it into place.</span>
+  <span class="kt">void</span> <span class="n">ProduceSwap</span><span class="p">(</span><span class="n">T</span> <span class="o">&amp;</span><span class="n">val</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">WaitSemaphore</span><span class="p">(</span><span class="n">empty_</span><span class="p">);</span>
+    <span class="p">{</span>
+      <span class="n">std</span><span class="o">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">produce_lock</span><span class="p">(</span><span class="n">produce_at_mutex_</span><span class="p">);</span>
+      <span class="k">try</span> <span class="p">{</span>
+        <span class="n">std</span><span class="o">::</span><span class="n">swap</span><span class="p">(</span><span class="o">*</span><span class="n">produce_at_</span><span class="p">,</span> <span class="n">val</span><span class="p">);</span>
+      <span class="p">}</span> <span class="k">catch</span> <span class="p">(...)</span> <span class="p">{</span>
+        <span class="n">empty_</span><span class="p">.</span><span class="n">post</span><span class="p">();</span>
+        <span class="k">throw</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span><span class="o">++</span><span class="n">produce_at_</span> <span class="o">==</span> <span class="n">end_</span><span class="p">)</span>
+        <span class="n">produce_at_</span> <span class="o">=</span> <span class="n">storage_</span><span class="p">.</span><span class="n">get</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="n">used_</span><span class="p">.</span><span class="n">post</span><span class="p">();</span>
+  <span class="p">}</span>
+
+  <span class="c1">// Consume a value, assigning it to out.</span>
+  <span class="n">T</span> <span class="o">&amp;</span><span class="n">Consume</span><span class="p">(</span><span class="n">T</span> <span class="o">&amp;</span><span class="n">out</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">WaitSemaphore</span><span class="p">(</span><span class="n">used_</span><span class="p">);</span>
+    <span class="p">{</span>
+      <span class="n">std</span><span class="o">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">consume_lock</span><span class="p">(</span><span class="n">consume_at_mutex_</span><span class="p">);</span>
+      <span class="k">try</span> <span class="p">{</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="o">*</span><span class="n">consume_at_</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">catch</span> <span class="p">(...)</span> <span class="p">{</span>
+        <span class="n">used_</span><span class="p">.</span><span class="n">post</span><span class="p">();</span>
+        <span class="k">throw</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span><span class="o">++</span><span class="n">consume_at_</span> <span class="o">==</span> <span class="n">end_</span><span class="p">)</span>
+        <span class="n">consume_at_</span> <span class="o">=</span> <span class="n">storage_</span><span class="p">.</span><span class="n">get</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="n">empty_</span><span class="p">.</span><span class="n">post</span><span class="p">();</span>
+    <span class="k">return</span> <span class="n">out</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="c1">// Consume a value, swapping it to out.</span>
+  <span class="n">T</span> <span class="o">&amp;</span><span class="n">ConsumeSwap</span><span class="p">(</span><span class="n">T</span> <span class="o">&amp;</span><span class="n">out</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">WaitSemaphore</span><span class="p">(</span><span class="n">used_</span><span class="p">);</span>
+    <span class="p">{</span>
+      <span class="n">std</span><span class="o">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">consume_lock</span><span class="p">(</span><span class="n">consume_at_mutex_</span><span class="p">);</span>
+      <span class="k">try</span> <span class="p">{</span>
+        <span class="n">std</span><span class="o">::</span><span class="n">swap</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="o">*</span><span class="n">consume_at_</span><span class="p">);</span>
+      <span class="p">}</span> <span class="k">catch</span> <span class="p">(...)</span> <span class="p">{</span>
+        <span class="n">used_</span><span class="p">.</span><span class="n">post</span><span class="p">();</span>
+        <span class="k">throw</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span><span class="o">++</span><span class="n">consume_at_</span> <span class="o">==</span> <span class="n">end_</span><span class="p">)</span>
+        <span class="n">consume_at_</span> <span class="o">=</span> <span class="n">storage_</span><span class="p">.</span><span class="n">get</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="n">empty_</span><span class="p">.</span><span class="n">post</span><span class="p">();</span>
+    <span class="k">return</span> <span class="n">out</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="c1">// Convenience version of Consume that copies the value to return.</span>
+  <span class="c1">// The other version is faster.</span>
+  <span class="n">T</span> <span class="n">Consume</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">T</span> <span class="n">ret</span><span class="p">;</span>
+    <span class="n">Consume</span><span class="p">(</span><span class="n">ret</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">ret</span><span class="p">;</span>
+  <span class="p">}</span>
+
+<span class="k">private</span><span class="o">:</span>
+  <span class="c1">// Number of empty spaces in storage_.</span>
+  <span class="n">Semaphore</span> <span class="n">empty_</span><span class="p">;</span>
+  <span class="c1">// Number of occupied spaces in storage_.</span>
+  <span class="n">Semaphore</span> <span class="n">used_</span><span class="p">;</span>
+
+  <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">T</span><span class="p">[]</span><span class="o">&gt;</span> <span class="n">storage_</span><span class="p">;</span>
+
+  <span class="n">T</span> <span class="o">*</span><span class="k">const</span> <span class="n">end_</span><span class="p">;</span>
+
+  <span class="c1">// Index for next write in storage_.</span>
+  <span class="n">T</span> <span class="o">*</span><span class="n">produce_at_</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">mutex</span> <span class="n">produce_at_mutex_</span><span class="p">;</span>
+
+  <span class="c1">// Index for next read from storage_.</span>
+  <span class="n">T</span> <span class="o">*</span><span class="n">consume_at_</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">mutex</span> <span class="n">consume_at_mutex_</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="o">&gt;</span> <span class="k">struct</span> <span class="nc">UnboundedPage</span> <span class="p">{</span>
+  <span class="n">UnboundedPage</span><span class="p">()</span> <span class="o">:</span> <span class="n">next</span><span class="p">(</span><span class="k">nullptr</span><span class="p">)</span> <span class="p">{}</span>
+  <span class="n">UnboundedPage</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>
+  <span class="n">T</span> <span class="n">entries</span><span class="p">[</span><span class="mi">1023</span><span class="p">];</span>
+<span class="p">};</span>
+
+<span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="o">&gt;</span> <span class="k">class</span> <span class="nc">UnboundedSingleQueue</span> <span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="n">UnboundedSingleQueue</span><span class="p">()</span> <span class="o">:</span> <span class="n">valid_</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">SetFilling</span><span class="p">(</span><span class="k">new</span> <span class="n">UnboundedPage</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">());</span>
+    <span class="n">SetReading</span><span class="p">(</span><span class="n">filling_</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">Produce</span><span class="p">(</span><span class="n">T</span> <span class="o">&amp;&amp;</span><span class="n">val</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">filling_current_</span> <span class="o">==</span> <span class="n">filling_end_</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">UnboundedPage</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">next</span> <span class="o">=</span> <span class="k">new</span> <span class="n">UnboundedPage</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">();</span>
+      <span class="n">filling_</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">next</span><span class="p">;</span>
+      <span class="n">SetFilling</span><span class="p">(</span><span class="n">next</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="o">*</span><span class="p">(</span><span class="n">filling_current_</span><span class="o">++</span><span class="p">)</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">val</span><span class="p">);</span>
+    <span class="n">valid_</span><span class="p">.</span><span class="n">post</span><span class="p">();</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">Produce</span><span class="p">(</span><span class="k">const</span> <span class="n">T</span> <span class="o">&amp;</span><span class="n">val</span><span class="p">)</span> <span class="p">{</span> <span class="n">Produce</span><span class="p">(</span><span class="n">T</span><span class="p">(</span><span class="n">val</span><span class="p">));</span> <span class="p">}</span>
+
+  <span class="n">T</span> <span class="o">&amp;</span><span class="n">Consume</span><span class="p">(</span><span class="n">T</span> <span class="o">&amp;</span><span class="n">out</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">WaitSemaphore</span><span class="p">(</span><span class="n">valid_</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">reading_current_</span> <span class="o">==</span> <span class="n">reading_end_</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">SetReading</span><span class="p">(</span><span class="n">reading_</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">reading_current_</span><span class="o">++</span><span class="p">));</span>
+    <span class="k">return</span> <span class="n">out</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="c1">// Warning: very much a no-guarantees race-condition-rich implementation!</span>
+  <span class="c1">// But sufficient for our specific purpose: The single thread that consumes</span>
+  <span class="c1">// is also the only one that checks Empty, and knows that it&#39;s racing.</span>
+  <span class="kt">bool</span> <span class="n">Empty</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">reading_current_</span> <span class="o">==</span> <span class="n">filling_current_</span><span class="p">;</span> <span class="p">}</span>
+
+<span class="k">private</span><span class="o">:</span>
+  <span class="kt">void</span> <span class="n">SetFilling</span><span class="p">(</span><span class="n">UnboundedPage</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">to</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">filling_</span> <span class="o">=</span> <span class="n">to</span><span class="p">;</span>
+    <span class="n">filling_current_</span> <span class="o">=</span> <span class="n">to</span><span class="o">-&gt;</span><span class="n">entries</span><span class="p">;</span>
+    <span class="n">filling_end_</span> <span class="o">=</span> <span class="n">filling_current_</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">to</span><span class="o">-&gt;</span><span class="n">entries</span><span class="p">)</span> <span class="o">/</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">T</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="kt">void</span> <span class="n">SetReading</span><span class="p">(</span><span class="n">UnboundedPage</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">to</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">reading_</span><span class="p">.</span><span class="n">reset</span><span class="p">(</span><span class="n">to</span><span class="p">);</span>
+    <span class="n">reading_current_</span> <span class="o">=</span> <span class="n">to</span><span class="o">-&gt;</span><span class="n">entries</span><span class="p">;</span>
+    <span class="n">reading_end_</span> <span class="o">=</span> <span class="n">reading_current_</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">to</span><span class="o">-&gt;</span><span class="n">entries</span><span class="p">)</span> <span class="o">/</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">T</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="n">Semaphore</span> <span class="n">valid_</span><span class="p">;</span>
+
+  <span class="n">UnboundedPage</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">filling_</span><span class="p">;</span>
+
+  <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">UnboundedPage</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span> <span class="n">reading_</span><span class="p">;</span>
+
+  <span class="n">T</span> <span class="o">*</span><span class="n">filling_current_</span><span class="p">;</span>
+  <span class="n">T</span> <span class="o">*</span><span class="n">filling_end_</span><span class="p">;</span>
+  <span class="n">T</span> <span class="o">*</span><span class="n">reading_current_</span><span class="p">;</span>
+  <span class="n">T</span> <span class="o">*</span><span class="n">reading_end_</span><span class="p">;</span>
+
+  <span class="n">UnboundedSingleQueue</span><span class="p">(</span><span class="k">const</span> <span class="n">UnboundedSingleQueue</span> <span class="o">&amp;</span><span class="p">)</span> <span class="o">=</span> <span class="k">delete</span><span class="p">;</span>
+  <span class="n">UnboundedSingleQueue</span> <span class="o">&amp;</span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">UnboundedSingleQueue</span> <span class="o">&amp;</span><span class="p">)</span> <span class="o">=</span> <span class="k">delete</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="p">}</span> <span class="c1">// namespace bergamot</span>
+<span class="p">}</span> <span class="c1">// namespace marian</span>
+
+<span class="cp">#endif </span><span class="c1">// SRC_BERGAMOT_PCQUEUE_H_</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Marian NMT Team.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

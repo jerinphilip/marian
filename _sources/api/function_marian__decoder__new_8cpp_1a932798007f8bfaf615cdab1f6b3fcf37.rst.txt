@@ -1,0 +1,13 @@
+.. _exhale_function_marian__decoder__new_8cpp_1a932798007f8bfaf615cdab1f6b3fcf37:
+
+Function marian_decoder_minimal
+===============================
+
+- Defined in :ref:`file_src_command_marian_decoder_new.cpp`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: marian_decoder_minimal(const marian::Histories&, marian::Ptr<marian::Vocab const>, marian::Ptr<marian::Options>)

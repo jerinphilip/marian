@@ -1,0 +1,13 @@
+.. _exhale_function_namespacemarian_1acfc07e9e53cb0040a8551401fbdbe4c3:
+
+Function marian::createScorers(Ptr<Options>, const std::vector<const void \*>&)
+===============================================================================
+
+- Defined in :ref:`file_src_translator_scorers.cpp`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: marian::createScorers(Ptr<Options>, const std::vector<const void *>&)

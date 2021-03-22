@@ -1,0 +1,71 @@
+
+.. _file_src_optimizers_clippers.h:
+
+File clippers.h
+===============
+
+|exhale_lsh| :ref:`Parent directory <dir_src_optimizers>` (``src/optimizers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``src/optimizers/clippers.h``)
+------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_src_optimizers_clippers.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``map``
+
+- ``memory`` (:ref:`file_src_tensors_memory_piece.h`)
+
+- ``tensors/allocator.h`` (:ref:`file_src_tensors_allocator.h`)
+
+- ``tensors/tensor.h`` (:ref:`file_src_tensors_tensor.h`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_src_optimizers_optimizers.h`
+
+- :ref:`file_src_optimizers_clippers.cpp`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_marian`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classmarian_1_1Clipper`
+
+- :ref:`exhale_class_classmarian_1_1ElementwiseClipper`
+
+- :ref:`exhale_class_classmarian_1_1NormClipper`
+
+- :ref:`exhale_class_classmarian_1_1ReportNormClipper`
+

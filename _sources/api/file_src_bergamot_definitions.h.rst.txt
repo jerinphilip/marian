@@ -1,0 +1,94 @@
+
+.. _file_src_bergamot_definitions.h:
+
+File definitions.h
+==================
+
+|exhale_lsh| :ref:`Parent directory <dir_src_bergamot>` (``src/bergamot``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``src/bergamot/definitions.h``)
+-------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_src_bergamot_definitions.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``data/types.h`` (:ref:`file_src_data_types.h`)
+
+- ``data/vocab_base.h`` (:ref:`file_src_data_vocab_base.h`)
+
+- ``vector`` (:ref:`file_src_embedder_vector_collector.cpp`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_src_bergamot_request.h`
+
+- :ref:`file_src_bergamot_response.h`
+
+- :ref:`file_src_bergamot_batch_translator.h`
+
+- :ref:`file_src_bergamot_batcher.h`
+
+- :ref:`file_src_bergamot_multifactor_priority.h`
+
+- :ref:`file_src_bergamot_request.cpp`
+
+- :ref:`file_src_bergamot_text_processor.h`
+
+- :ref:`file_src_bergamot_service.cpp`
+
+- :ref:`file_src_bergamot_text_processor.cpp`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_marian`
+
+- :ref:`namespace_marian__bergamot`
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_bergamot_2definitions_8h_1af891fd0c2012708799d694f4705bcda1`
+
+- :ref:`exhale_function_bergamot_2definitions_8h_1a7babf66383dc1ecd341241a9dd065326`
+
+
+Typedefs
+--------
+
+
+- :ref:`exhale_typedef_bergamot_2definitions_8h_1ad0a7527b1fbf64cfc20eaa76134785ef`
+
+- :ref:`exhale_typedef_bergamot_2definitions_8h_1a11beb3c0bc803965512b9ccf8c6f23bb`
+
+- :ref:`exhale_typedef_bergamot_2definitions_8h_1a1585504382103205288347f667d5bbca`
+
+- :ref:`exhale_typedef_bergamot_2definitions_8h_1a0a0cdb717399bd6343aaa052aec6ffab`
+

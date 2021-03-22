@@ -1,0 +1,25 @@
+.. _exhale_class_classmarian_1_1ExponentialSmoothing:
+
+Class ExponentialSmoothing
+==========================
+
+- Defined in :ref:`file_src_optimizers_exponential_smoothing.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Derived Type
+************
+
+- ``public marian::OptimizerBase`` (:ref:`exhale_class_classmarian_1_1OptimizerBase`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: marian::ExponentialSmoothing
+   :members:
+   :protected-members:
+   :undoc-members:

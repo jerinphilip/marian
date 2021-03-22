@@ -1,0 +1,13 @@
+.. _exhale_function_bergamot_2definitions_8h_1a7babf66383dc1ecd341241a9dd065326:
+
+Template Function marian::bergamot::UNew(UPtr<T>)
+=================================================
+
+- Defined in :ref:`file_src_bergamot_definitions.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: marian::bergamot::UNew(UPtr<T>)

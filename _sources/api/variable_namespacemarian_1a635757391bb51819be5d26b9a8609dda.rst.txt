@@ -1,0 +1,13 @@
+.. _exhale_variable_namespacemarian_1a635757391bb51819be5d26b9a8609dda:
+
+Variable marian::BINARY_FILE_VERSION
+====================================
+
+- Defined in :ref:`file_src_common_binary.h`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: marian::BINARY_FILE_VERSION

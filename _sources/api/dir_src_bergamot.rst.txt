@@ -1,0 +1,44 @@
+.. _dir_src_bergamot:
+
+
+Directory bergamot
+==================
+
+
+|exhale_lsh| :ref:`Parent directory <dir_src>` (``src``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+*Directory path:* ``src/bergamot``
+
+
+Files
+-----
+
+- :ref:`file_src_bergamot_batch.cpp`
+- :ref:`file_src_bergamot_batch.h`
+- :ref:`file_src_bergamot_batch_translator.cpp`
+- :ref:`file_src_bergamot_batch_translator.h`
+- :ref:`file_src_bergamot_batcher.cpp`
+- :ref:`file_src_bergamot_batcher.h`
+- :ref:`file_src_bergamot_definitions.h`
+- :ref:`file_src_bergamot_multifactor_priority.cpp`
+- :ref:`file_src_bergamot_multifactor_priority.h`
+- :ref:`file_src_bergamot_parser.h`
+- :ref:`file_src_bergamot_pcqueue.h`
+- :ref:`file_src_bergamot_request.cpp`
+- :ref:`file_src_bergamot_request.h`
+- :ref:`file_src_bergamot_response.cpp`
+- :ref:`file_src_bergamot_response.h`
+- :ref:`file_src_bergamot_sentence_ranges.cpp`
+- :ref:`file_src_bergamot_sentence_ranges.h`
+- :ref:`file_src_bergamot_sentence_splitter.cpp`
+- :ref:`file_src_bergamot_sentence_splitter.h`
+- :ref:`file_src_bergamot_service.cpp`
+- :ref:`file_src_bergamot_service.h`
+- :ref:`file_src_bergamot_service_base.cpp`
+- :ref:`file_src_bergamot_service_base.h`
+- :ref:`file_src_bergamot_text_processor.cpp`
+- :ref:`file_src_bergamot_text_processor.h`
+
+

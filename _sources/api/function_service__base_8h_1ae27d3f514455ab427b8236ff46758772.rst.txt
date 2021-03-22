@@ -1,0 +1,13 @@
+.. _exhale_function_service__base_8h_1ae27d3f514455ab427b8236ff46758772:
+
+Function marian::bergamot::loadVocabularies
+===========================================
+
+- Defined in :ref:`file_src_bergamot_service_base.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: marian::bergamot::loadVocabularies(Ptr<Options>)

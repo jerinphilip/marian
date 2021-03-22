@@ -1,0 +1,58 @@
+
+.. _file_src_bergamot_text_processor.cpp:
+
+File text_processor.cpp
+=======================
+
+|exhale_lsh| :ref:`Parent directory <dir_src_bergamot>` (``src/bergamot``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``src/bergamot/text_processor.cpp``)
+------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_src_bergamot_text_processor.cpp.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``common/options.h`` (:ref:`file_src_common_options.h`)
+
+- ``data/types.h`` (:ref:`file_src_data_types.h`)
+
+- ``data/vocab.h`` (:ref:`file_src_data_vocab.h`)
+
+- ``definitions.h`` (:ref:`file_src_bergamot_definitions.h`)
+
+- ``sentence_ranges.h`` (:ref:`file_src_bergamot_sentence_ranges.h`)
+
+- ``text_processor.h`` (:ref:`file_src_bergamot_text_processor.h`)
+
+- ``vector`` (:ref:`file_src_embedder_vector_collector.cpp`)
+
+
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_marian`
+
+- :ref:`namespace_marian__bergamot`
+

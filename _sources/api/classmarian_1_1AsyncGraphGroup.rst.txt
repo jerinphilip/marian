@@ -1,0 +1,25 @@
+.. _exhale_class_classmarian_1_1AsyncGraphGroup:
+
+Class AsyncGraphGroup
+=====================
+
+- Defined in :ref:`file_src_training_graph_group_async.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public marian::GraphGroup`` (:ref:`exhale_class_classmarian_1_1GraphGroup`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: marian::AsyncGraphGroup
+   :members:
+   :protected-members:
+   :undoc-members:

@@ -1,0 +1,37 @@
+
+.. _program_listing_file_src_bergamot_definitions.h:
+
+Program Listing for File definitions.h
+======================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_src_bergamot_definitions.h>` (``src/bergamot/definitions.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #ifndef SRC_BERGAMOT_DEFINITIONS_H_
+   #define SRC_BERGAMOT_DEFINITIONS_H_
+   
+   #include "data/types.h"
+   #include "data/vocab_base.h"
+   #include <vector>
+   
+   namespace marian {
+   namespace bergamot {
+   
+   typedef marian::Words Segment;
+   typedef std::vector<Segment> Segments;
+   typedef std::vector<marian::string_view> TokenRanges;
+   typedef std::vector<TokenRanges> SentenceTokenRanges;
+   
+   template <class T, typename... Args> UPtr<T> UNew(Args &&... args) {
+     return UPtr<T>(new T(std::forward<Args>(args)...));
+   }
+   
+   template <class T> UPtr<T> UNew(UPtr<T> p) { return UPtr<T>(p); }
+   
+   } // namespace bergamot
+   } // namespace marian
+   
+   #endif // SRC_BERGAMOT_DEFINITIONS_H_

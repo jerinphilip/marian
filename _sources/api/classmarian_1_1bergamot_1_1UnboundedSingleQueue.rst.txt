@@ -1,0 +1,16 @@
+.. _exhale_class_classmarian_1_1bergamot_1_1UnboundedSingleQueue:
+
+Template Class UnboundedSingleQueue
+===================================
+
+- Defined in :ref:`file_src_bergamot_pcqueue.h`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: marian::bergamot::UnboundedSingleQueue
+   :members:
+   :protected-members:
+   :undoc-members:

@@ -1,0 +1,13 @@
+.. _exhale_function_quicksand_8cpp_1ac088623dd86553662ab0d9cbf00ec79b:
+
+Function marian::quicksand::newDecoder
+======================================
+
+- Defined in :ref:`file_src_microsoft_quicksand.cpp`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: marian::quicksand::newDecoder(Ptr<Options>, const std::vector<const void *>&, const std::vector<Ptr<IVocabWrapper>>&, WordIndex)

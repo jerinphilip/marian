@@ -1,0 +1,63 @@
+
+.. _file_src_bergamot_multifactor_priority.h:
+
+File multifactor_priority.h
+===========================
+
+|exhale_lsh| :ref:`Parent directory <dir_src_bergamot>` (``src/bergamot``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``src/bergamot/multifactor_priority.h``)
+----------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_src_bergamot_multifactor_priority.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``data/types.h`` (:ref:`file_src_data_types.h`)
+
+- ``definitions.h`` (:ref:`file_src_bergamot_definitions.h`)
+
+- ``sys/time.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_src_bergamot_multifactor_priority.cpp`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_marian`
+
+- :ref:`namespace_marian__bergamot`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_struct_structmarian_1_1bergamot_1_1MultiFactorPriority`
+

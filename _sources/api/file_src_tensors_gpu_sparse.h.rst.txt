@@ -1,0 +1,59 @@
+
+.. _file_src_tensors_gpu_sparse.h:
+
+File sparse.h
+=============
+
+|exhale_lsh| :ref:`Parent directory <dir_src_tensors_gpu>` (``src/tensors/gpu``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``src/tensors/gpu/sparse.h``)
+-----------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_src_tensors_gpu_sparse.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``common/definitions.h`` (:ref:`file_src_common_definitions.h`)
+
+- ``cusparse_v2.h``
+
+- ``kernels/cuda_helpers.h``
+
+- ``tensors/tensor.h`` (:ref:`file_src_tensors_tensor.h`)
+
+
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_marian`
+
+- :ref:`namespace_marian__sparse`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classmarian_1_1sparse_1_1CSR`
+

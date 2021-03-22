@@ -1,0 +1,82 @@
+
+.. _file_src_bergamot_service_base.h:
+
+File service_base.h
+===================
+
+|exhale_lsh| :ref:`Parent directory <dir_src_bergamot>` (``src/bergamot``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``src/bergamot/service_base.h``)
+--------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_src_bergamot_service_base.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``batch_translator.h`` (:ref:`file_src_bergamot_batch_translator.h`)
+
+- ``batcher.h`` (:ref:`file_src_bergamot_batcher.h`)
+
+- ``data/types.h`` (:ref:`file_src_data_types.h`)
+
+- ``queue`` (:ref:`file_src_bergamot_pcqueue.h`)
+
+- ``response.h`` (:ref:`file_src_bergamot_response.h`)
+
+- ``text_processor.h`` (:ref:`file_src_bergamot_text_processor.h`)
+
+- ``vector`` (:ref:`file_src_embedder_vector_collector.cpp`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_src_bergamot_service.h`
+
+- :ref:`file_src_bergamot_service_base.cpp`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_marian`
+
+- :ref:`namespace_marian__bergamot`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classmarian_1_1bergamot_1_1NonThreadedService`
+
+- :ref:`exhale_class_classmarian_1_1bergamot_1_1ServiceBase`
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_service__base_8h_1ae27d3f514455ab427b8236ff46758772`
+

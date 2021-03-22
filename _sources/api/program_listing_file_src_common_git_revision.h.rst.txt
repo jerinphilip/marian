@@ -1,0 +1,13 @@
+
+.. _program_listing_file_src_common_git_revision.h:
+
+Program Listing for File git_revision.h
+=======================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_src_common_git_revision.h>` (``src/common/git_revision.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #define GIT_REVISION "53d7b072 2021-03-21 17:26:09 +0000"

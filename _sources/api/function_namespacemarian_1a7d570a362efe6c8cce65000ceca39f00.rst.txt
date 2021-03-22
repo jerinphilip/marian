@@ -1,0 +1,13 @@
+.. _exhale_function_namespacemarian_1a7d570a362efe6c8cce65000ceca39f00:
+
+Function marian::operator &
+===========================
+
+- Defined in :ref:`file_src_common_types.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: marian::operator &(TypeClass, Type)

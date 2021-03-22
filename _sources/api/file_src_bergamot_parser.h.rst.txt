@@ -1,0 +1,61 @@
+
+.. _file_src_bergamot_parser.h:
+
+File parser.h
+=============
+
+|exhale_lsh| :ref:`Parent directory <dir_src_bergamot>` (``src/bergamot``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``src/bergamot/parser.h``)
+--------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_src_bergamot_parser.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``marian.h`` (:ref:`file_src_marian.h`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_src_command_marian_decoder_new.cpp`
+
+- :ref:`file_src_command_marian_service_test_app.cpp`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_marian`
+
+- :ref:`namespace_marian__bergamot`
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_parser_8h_1a9d7a795b4232908367ad7d9348c62455`
+

@@ -1,0 +1,13 @@
+.. _exhale_variable_namespacemarian_1ab2b1541cde01657456753b593aa59ed3:
+
+Variable marian::exts
+=====================
+
+- Defined in :ref:`file_src_data_factored_vocab.cpp`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: marian::exts

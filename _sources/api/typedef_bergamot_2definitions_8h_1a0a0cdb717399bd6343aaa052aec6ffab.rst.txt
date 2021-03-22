@@ -1,0 +1,13 @@
+.. _exhale_typedef_bergamot_2definitions_8h_1a0a0cdb717399bd6343aaa052aec6ffab:
+
+Typedef marian::bergamot::TokenRanges
+=====================================
+
+- Defined in :ref:`file_src_bergamot_definitions.h`
+
+
+Typedef Documentation
+---------------------
+
+
+.. doxygentypedef:: marian::bergamot::TokenRanges

@@ -1,0 +1,22 @@
+
+.. _program_listing_file_src_layers_generic.cpp:
+
+Program Listing for File generic.cpp
+====================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_src_layers_generic.cpp>` (``src/layers/generic.cpp``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #include "marian.h"
+   
+   #include "data/factored_vocab.h"
+   #include "layers/constructors.h"
+   #include "layers/generic.h"
+   #include "layers/loss.h"
+   #include "layers/lsh.h"
+   #include "models/states.h"  // for EncoderState
+   
+   namespace marian {}  // namespace marian

@@ -1,0 +1,16 @@
+.. _exhale_class_classmarian_1_1bergamot_1_1Response:
+
+Class Response
+==============
+
+- Defined in :ref:`file_src_bergamot_response.h`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: marian::bergamot::Response
+   :members:
+   :protected-members:
+   :undoc-members:

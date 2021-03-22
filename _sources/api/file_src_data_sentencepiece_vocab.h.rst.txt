@@ -1,0 +1,37 @@
+
+.. _file_src_data_sentencepiece_vocab.h:
+
+File sentencepiece_vocab.h
+==========================
+
+|exhale_lsh| :ref:`Parent directory <dir_src_data>` (``src/data``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``src/data/sentencepiece_vocab.h``)
+-----------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_src_data_sentencepiece_vocab.h.rst
+
+
+
+
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_src_data_sentencepiece_vocab.cpp`
+
+
+
