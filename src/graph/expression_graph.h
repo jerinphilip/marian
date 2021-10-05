@@ -41,9 +41,17 @@ public:
       : tensors_(New<TensorAllocator>(backend, device)),
         cache_(New<TensorAllocator>(backend)),
         shortterm_(New<WeakMemory>()),
+        longterm_(New<Memory>()){}
+
+  // We introduce this third constructor, where we can share a workspace
+  // (static preallocated storage) from a worker which comes from elsewhere. 
+  Tensors(Ptr<TensorAllocator> tensors, Ptr<TensorAllocator> cache)
+      : tensors_(tensors), 
+        cache_(cache), 
+        shortterm_(New<WeakMemory>()), 
         longterm_(New<Memory>()) {}
 
-  void reserve(size_t bytes) { tensors_->reserve(bytes); }
+  void reserve(size_t bytes) { tensors_->reserve(bytes); } 
 
   void throwAtReallocation(bool throwAtRealloc) {
     tensors_->throwAtReallocation(throwAtRealloc);
@@ -72,18 +80,6 @@ public:
     size_t hash = node->hash();
     // memoize constant nodes that are not parameters
     // parameters are already memoized in the graph itself
-
-    // int size1 = 0;
-    // for (auto it = longterm_->begin(); it != longterm_->end(); it++) {
-    //   size1 += it->second.size();
-    // }
-
-    // int size2 = 0;
-    // for (auto it = shortterm_->begin(); it != shortterm_->end(); it++) {
-    //   size2 += it->second.size();
-    // }
-    // std::cerr << "Longterm: " << size1 << " shortterm: " << size2 << std::endl;
-
     if(node->type() != "param" && node->memoize()) {
       auto it = longterm_->find(hash);
       if(it != longterm_->end()) {
@@ -136,8 +132,6 @@ protected:  // (these are protected, not private, for ONNX exporting)
   std::list<Expr> nodesForward_;
   std::list<Expr> nodesBackward_;
 
-  // Holds memory and expressions that correspond to temporary expressions.
-  // This gets cleared before a new graph is built.
   Ptr<Tensors> tensors_;
 private:
 
@@ -184,6 +178,10 @@ public:
 
   virtual void setDevice(DeviceId deviceId = {0, DeviceType::gpu},
                          Ptr<Device> device = nullptr);
+
+  void setWorkspaces(Ptr<TensorAllocator> tensors, Ptr<TensorAllocator> cache){
+      tensors_ = New<Tensors>(tensors, cache);
+  }
 
   DeviceId getDeviceId() { return backend_->getDeviceId(); }
 
@@ -494,7 +492,9 @@ public:
 
     topNodes_.clear();
 
-    tensors_->clear();
+    if(tensors_){
+        tensors_->clear();
+    }
   }
 
   void setReloaded(bool reloaded) { reloaded_ = reloaded; }
