@@ -289,6 +289,7 @@ void TransposeFirst3In4(Tensor out, Tensor in, const std::vector<int>& vAxis) {
 }
 #endif  // MKL_FOUND
 
+#ifdef __i386__
 inline void transpose4x4_SSE(const float* A,
                              float* B,
                              const int lda,
@@ -331,6 +332,8 @@ void Transpose10(Tensor out, const Tensor in) {
     }
   }
 }
+
+#endif // __i386__
 
 // @TODO: optimize this, currently it's quite horrible
 template <bool add>
