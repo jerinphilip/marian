@@ -227,7 +227,7 @@ else(MSVC)
     # -msse4.1 once marian can solely be compiled with intgemm ("onnxjs" will be removed in that case)
     set(INTRINSICS "-mssse3 -msimd128")
   else()
-    set(INTRINSICS "-msse4.1")
+      set(INTRINSICS "") # Don't assume intrinsics available if arch is not native. 
   endif()
 
   if(USE_FBGEMM)
