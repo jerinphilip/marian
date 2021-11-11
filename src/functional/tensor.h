@@ -20,6 +20,7 @@ inline marian::Shape adapt(const marian::Shape& shape) {
 // at once and need to stop earlier. This is a shallow typecast to bascially an array of 4 floats.
 
 #ifndef __CUDACC__ // vectorized types not available from .cu files
+#ifdef __i386__
 
 template <>
 inline marian::Shape adapt<float32x4>(const marian::Shape& shape) {
@@ -42,8 +43,9 @@ inline marian::Shape adapt<float32x8>(const marian::Shape& shape) {
   x8Shape.set(-1, shape[-1] / 8);
   return x8Shape;
 }
-#endif
-#endif
+#endif // __AVX__
+#endif // __i386__
+#endif // __CUDACC__
 
 template <typename T, const int D>
 struct View {

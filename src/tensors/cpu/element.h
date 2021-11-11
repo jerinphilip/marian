@@ -82,6 +82,7 @@ void element(const Functor& functor, marian::Tensor out, Tensors... tensors) {
 template <class Functor, class... Tensors>
 void elementFloat(const Functor& functor, marian::Tensor out, Tensors... tensors) {
 #ifndef __CUDACC__
+#ifdef __i386__
   std::vector<marian::Tensor> ts({tensors...});
   bool div8 = true;
   bool div4 = true;
@@ -102,7 +103,7 @@ void elementFloat(const Functor& functor, marian::Tensor out, Tensors... tensors
 #ifdef __AVX__
     element<float32x8>(functor, out, tensors...);
     return;
-#endif
+#endif // __AVX__
   }
 
   if(div4) {
@@ -110,7 +111,8 @@ void elementFloat(const Functor& functor, marian::Tensor out, Tensors... tensors
     element<float32x4>(functor, out, tensors...);
     return;
   }
-#endif
+#endif // __i386__
+#endif // __CUDACC__
   // std::cerr << "1: " << functor.to_string() << std::endl;
   element<float>(functor, out, tensors...);
 }

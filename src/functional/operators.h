@@ -212,6 +212,7 @@ struct Ops<double> {
 // __CUDACC__ is defined when compiling with NVCC regardless of device type
 // __CUDA_ARCH__ is defined when compiling device (GPU) code
 #ifndef __CUDACC__
+#ifdef __i386__
 
 #include "3rd_party/sse_mathfun.h"
 
@@ -467,6 +468,7 @@ struct Ops<float32x8> {
 } // end namespace functional
 } // end namespace marian
 #endif
+#endif // __i386__
 #endif // of "#ifndef __CUDACC__"
 
 #ifdef __CUDACC__
