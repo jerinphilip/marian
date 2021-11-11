@@ -4,15 +4,17 @@
 #include "tensors/tensor_operators.h"
 #include "tensors/cpu/aligned.h"
 #include "common/io_item.h"
+#ifdef __i386__
 #include "3rd_party/intgemm/intgemm/intgemm.h"
-#if defined(WASM)
-#include "wasm_intgemm_interface.h"
-#endif
-
 #include <emmintrin.h>
 #include <immintrin.h>
 #include <tmmintrin.h>
 #include <xmmintrin.h>
+#endif // __i386__
+#if defined(WASM)
+#include "wasm_intgemm_interface.h"
+#endif
+
 #include <cassert>
 #include <cstddef>
 
@@ -27,6 +29,7 @@ inline int rows(Tensor& tensor) { return tensor->shape().elements() / cols(tenso
 inline int cols(Shape& shape) { return shape[-1]; }
 inline int rows(Shape& shape) { return shape.elements() / cols(shape); }
 
+#ifdef __i386__
 template<Type type> struct intgemm_;
 template <> struct intgemm_<Type::int8> {using width = intgemm::Int8;
                                          using type = int8_t;
@@ -34,6 +37,7 @@ template <> struct intgemm_<Type::int8> {using width = intgemm::Int8;
 template <> struct intgemm_<Type::int16> {using width = intgemm::Int16;
                                           using type = int16_t;
                                           constexpr static const Type intgemmType = Type::intgemm16;};
+#endif // __i386__
 
 // This operates on floats after processing so doesn't care about int8_t vs int16_t.
 void AddBias(marian::Tensor C, const marian::Tensor Bias);
@@ -104,3 +108,4 @@ void unquantizeWemb(io::Item& item, const char * input) {
 } //integer
 } //cpu
 } //marian
+
