@@ -63,7 +63,7 @@ jobs:
         ccache -s # Print current cache stats
         ccache -z # Zero cache entry
 
-    - name: Build marian for android
+    - name: Generate buildfiles for marian on android via cmake
       run: |-
         mkdir -p build 
         cd build
@@ -100,6 +100,10 @@ jobs:
             -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache \
             "${OTHER_ANDROID_ARGS[@]}" "${OTHER_MARIAN_ARGS[@]}" \
             ..
+    - name : Build marian for android
+      working-directory: build
+      run: |-
+          make -j2
 
     - name: ccache epilog
       run: 'ccache -s # Print current cache stats'
