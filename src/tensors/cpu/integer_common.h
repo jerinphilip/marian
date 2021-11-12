@@ -83,8 +83,8 @@ void prepareAndTransposeB(io::Item &item, const char *input) {
     intgemm_<vtype>::width::PrepareBQuantizedTransposed(
         reinterpret_cast<const Integer *>(input),
         output_tensor,
-        rows(item.shape),  // Since we only transposed, but didn't update the shape when
-                           // constructing the binary,
+        rows(item.shape),   // Since we only transposed, but didn't update the shape when
+                            // constructing the binary,
         cols(item.shape));  // rows here returns the columns of the transposed input matrix, and
                             // cols -> the rows
 #endif
@@ -108,8 +108,8 @@ void prepareAndTransposeB(io::Item &item, const char *input) {
     intgemm_<vtype>::width::PrepareBQuantizedTransposed(
         reinterpret_cast<const Integer *>(aligned_input),
         reinterpret_cast<Integer *>(aligned_output),
-        rows(item.shape),  // Since we only transposed, but didn't update the shape when
-                           // constructing the binary,
+        rows(item.shape),   // Since we only transposed, but didn't update the shape when
+                            // constructing the binary,
         cols(item.shape));  // rows here returns the columns of the transposed input matrix, and
                             // cols -> the rows
 #endif
