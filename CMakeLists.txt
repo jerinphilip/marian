@@ -520,7 +520,11 @@ endif(USE_MPI)
 ###############################################################################
 # Find BLAS library for CPU compilation
 if(COMPILE_CPU)
+if(${CMAKE_ANDROID_ARCH_ABI} MATCHES "arm")
+  set(EXT_LIBS ${EXT_LIBS} ruy)
+else()
   set(EXT_LIBS ${EXT_LIBS} intgemm)       # Move the intgemm bits on top since they compile with every single variant
+endif()
   add_definitions(-DCOMPILE_CPU=1)        # Move the compile CPU definition on top since we want to compile intgemm when we set compile CPU
                                           # in case a BLAS vendor is not found, we have a runtime error, although we should probably not allow the compilation to go on
                                           # if there are BLAS vendors, we have other runtime checks with sane error messages.

@@ -12,6 +12,7 @@ add_subdirectory(./pathie-cpp)
 
 if(${CMAKE_ANDROID_ARCH_ABI} MATCHES "arm")
     # Do not include intgemm
+  add_subdirectory(./ruy)
 else()
   message("CMAKE_SYSTEM_PROCESSOR" ${CMAKE_SYSTEM_PROCESSOR})
   set(INTGEMM_DONT_BUILD_TESTS ON CACHE BOOL "Disable intgemm tests")
