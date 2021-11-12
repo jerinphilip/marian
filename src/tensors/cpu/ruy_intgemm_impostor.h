@@ -193,7 +193,15 @@ void int8PrepareBias(const int8_t *input_B_prepared,
                        Index A_rows,
                        Index width,
                        Index B_cols,
-                       Callback callback) {
+                       Callback callback) {}
+
+  // Multiply C = A * B, presuming A and B have been prepared.
+  static void Multiply(const Integer *A,
+                       const Integer *B,
+                       Index A_rows,
+                       Index width,
+                       Index B_cols,
+                       intgemm::callbacks::UnquantizeAndAddBiasAndWrite callback) {
     /*
     void int8MultiplyAndAddBias(
         const int8_t *input_A_prepared, float scale_A, float zero_point_A,
