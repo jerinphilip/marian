@@ -37,7 +37,6 @@ option(USE_NCCL "Use NCCL library" ON)
 option(USE_SENTENCEPIECE "Download and compile SentencePiece" ON)
 option(USE_STATIC_LIBS "Link statically against non-system libs" OFF)
 option(GENERATE_MARIAN_INSTALL_TARGETS "Generate Marian install targets (requires CMake 3.12+)" OFF)
-option(M32_BINARIES "Generate 32bit binaries even when building outside of WASM. Useful for testing some WASM specific functionality without the need for the compiling to WASM." OFF)
 option(COMPILE_WASM "Compile (wasm compatible) marian for WASM target" OFF)
 option(USE_WASM_COMPATIBLE_SOURCE "Enable the minimal marian sources that compile to wasm. Useful for debugging wasm failures by building same sources natively" OFF)
 
@@ -61,10 +60,11 @@ if (COMPILE_WASM)
   set(WORMHOLE ON CACHE BOOL "Use WASM wormhole in intgemm https://bugzilla.mozilla.org/show_bug.cgi?id=1672160")
 endif()
 
-if(M32_BINARIES OR COMPILE_WASM)
+
+if(COMPILE_WASM)
     set("BUILD_WIDTH" "-m32")
-else(M32_BINARIES OR COMPILE_WASM)
-    set("BUILD_WIDTH" "-m64")
+else(COMPILE_WASM)
+    set("BUILD_WIDTH" "")
 endif()
 
 if(NOT COMPILE_WASM)
