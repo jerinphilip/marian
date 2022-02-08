@@ -10,8 +10,10 @@ if(NOT USE_WASM_COMPATIBLE_SOURCE)
 endif()
 add_subdirectory(./pathie-cpp)
 
-set(INTGEMM_DONT_BUILD_TESTS ON CACHE BOOL "Disable intgemm tests")
-add_subdirectory(./intgemm)
+if(USE_INTGEMM)
+  set(INTGEMM_DONT_BUILD_TESTS ON CACHE BOOL "Disable intgemm tests")
+  add_subdirectory(./intgemm)
+endif(USE_INTGEMM)
 
 if(USE_WASM_COMPATIBLE_BLAS)
   add_subdirectory(./onnxjs)
