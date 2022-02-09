@@ -261,6 +261,7 @@ else(MSVC)
   endif(USE_FBGEMM)
 
   if(USE_SIMDE)
+    add_definitions(-DUSE_SIMDE=1)
     add_definitions(-DSIMDE_ENABLE_NATIVE_ALIASES=1)
   endif(USE_SIMDE)
 
