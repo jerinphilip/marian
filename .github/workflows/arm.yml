@@ -73,6 +73,8 @@ jobs:
         make -C OpenBLAS PREFIX=$INSTALL_PREFIX install
         find $INSTALL_PREFIX
 
+        make -C OpenBLAS PREFIX=/usr/ install
+
     - name: Generate buildfiles for marian on android via cmake
       run: |-
         mkdir -p build 
