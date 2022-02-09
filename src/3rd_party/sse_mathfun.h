@@ -29,7 +29,11 @@
   (this is the zlib license)
 */
 
+#ifndef USE_SIMDE
 #include <xmmintrin.h>
+#else
+#include "x86/avx2.h"
+#endif
 
 /* yes I know, the top of this file is quite ugly */
 
