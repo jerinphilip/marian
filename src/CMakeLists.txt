@@ -105,7 +105,6 @@ if (NOT USE_WASM_COMPATIBLE_SOURCE)
     3rd_party/ExceptionWithCallStack.cpp
 
     data/corpus_sqlite.cpp
-    tensors/cpu/fbgemm/packed_gemm.cpp
     layers/lsh.cpp
     optimizers/quantizer.cpp
 
@@ -123,6 +122,11 @@ if (NOT USE_WASM_COMPATIBLE_SOURCE)
     $<TARGET_OBJECTS:zlib>
     $<TARGET_OBJECTS:faiss>
   )
+  if(USE_FBGEMM)
+    list(APPEND MARIAN_SOURCES
+      tensors/cpu/fbgemm/packed_gemm.cpp
+    )
+  endif(USE_FBGEMM)
 endif()
 
 add_library(marian STATIC ${MARIAN_SOURCES})
