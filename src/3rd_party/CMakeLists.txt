@@ -5,8 +5,15 @@ add_subdirectory(./yaml-cpp)
 if(NOT USE_WASM_COMPATIBLE_SOURCE)
   add_subdirectory(./SQLiteCpp)
   add_subdirectory(./zlib)
+
+  # Trying faiss as a submodule. We may simplify this later.
+  # Newer code appears to be building for ARM thus providing ARM support.
+  set(FAISS_ENABLE_GPU OFF CACHE BOOL "Enable support for GPU indexes.")
+  set(FAISS_ENABLE_PYTHON OFF CACHE BOOL "Enable Python extension")
+
   add_subdirectory(./faiss)
   include_directories(./faiss)
+
 endif()
 add_subdirectory(./pathie-cpp)
 
