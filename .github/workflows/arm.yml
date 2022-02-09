@@ -73,7 +73,6 @@ jobs:
         OTHER_MARIAN_ARGS=(
             -DCOMPILE_CUDA=off
             -DCOMPILE_CPU=on
-            -DUSE_WASM_COMPATIBLE_SOURCE=on
             -DCMAKE_HAVE_THREADS_LIBRARY=1
             -DCMAKE_USE_WIN32_THREADS_INIT=0
             -DCMAKE_USE_PTHREADS_INIT=1
