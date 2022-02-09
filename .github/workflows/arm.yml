@@ -69,11 +69,11 @@ jobs:
         make -C OpenBLAS HOSTCC=gcc \
              CC=${NDK}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android31-clang \
              ONLY_CBLAS=1 TARGET=ARMV8
-        INSTALL_PREFIX=$NDK/prebuilt/android-arm64/
+        INSTALL_PREFIX=$NDK/prebuilt/android-arm64
         make -C OpenBLAS PREFIX=$INSTALL_PREFIX install
         find $INSTALL_PREFIX
 
-        make -C OpenBLAS PREFIX=/usr/ install
+        sudo make -C OpenBLAS PREFIX=/usr install
 
     - name: Generate buildfiles for marian on android via cmake
       run: |-
