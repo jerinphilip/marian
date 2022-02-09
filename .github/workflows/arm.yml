@@ -15,6 +15,10 @@ env:
   ccache_compresslevel: 9
   ccache_maxsize: 200M
   ccache_cmake: -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
+  ndk: "${{ github.workspace }}/android-ndk-r23b"
+  abi: "arm64-v8a"
+  minsdk_version : 28
+  android_platform: 28
 
 jobs:
   ubuntu:
@@ -32,12 +36,14 @@ jobs:
           wget -c --quiet https://dl.google.com/android/repository/android-ndk-r23b-linux.zip
           unzip -qq android-ndk-r23b-linux.zip
           sudo apt-get -y install ccache cmake
+
     - name: Generate ccache_vars for ccache based on machine
       shell: bash
       id: ccache_vars
       run: |-
         echo "::set-output name=hash::$(echo ${{ env.ccache_compilercheck }})"
         echo "::set-output name=timestamp::$(date '+%Y-%m-%dT%H.%M.%S')"
+
     - name: Cache-op for build-cache through ccache
       uses: actions/cache@v2
       with:
@@ -47,6 +53,7 @@ jobs:
           ccache-${{ matrix.identifier }}-${{ steps.ccache_vars.outputs.hash }}-${{ github.ref }}
           ccache-${{ matrix.identifier }}-${{ steps.ccache_vars.outputs.hash }}
           ccache-${{ matrix.identifier }}
+
     - name: ccache environment setup
       run: |-
         echo "CCACHE_COMPILER_CHECK=${{ env.ccache_compilercheck }}" >> $GITHUB_ENV
@@ -55,6 +62,7 @@ jobs:
         echo "CCACHE_COMPRESSLEVEL=${{ env.ccache_compresslevel }}" >> $GITHUB_ENV
         echo "CCACHE_DIR=${{ env.ccache_dir }}" >> $GITHUB_ENV
         echo "CCACHE_MAXSIZE=${{ env.ccache_maxsize }}" >> $GITHUB_ENV
+
     - name: ccache prolog
       run: |-
         ccache -s # Print current cache stats
@@ -63,26 +71,25 @@ jobs:
     - name: Build OpenBLAS for Android
       run: |
         # Set path to ndk-bundle
-        NDK="${{ github.workspace }}/android-ndk-r23b"
+        NDK="${{ env.ndk }}"
         git clone https://github.com/xianyi/OpenBLAS
         export PATH=${NDK}/toolchains/llvm/prebuilt/linux-x86_64/bin/:$PATH
         make -C OpenBLAS HOSTCC=gcc \
-             CC=${NDK}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android31-clang \
+             CC=${NDK}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android${{env.android_platform}}-clang \
              ONLY_CBLAS=1 TARGET=ARMV8
-        INSTALL_PREFIX=$NDK/prebuilt/android-arm64
+        INSTALL_PREFIX=${NDK}/toolchains/llvm/prebuilt/linux-x86_64/
         make -C OpenBLAS PREFIX=$INSTALL_PREFIX install
         find $INSTALL_PREFIX
-
         sudo make -C OpenBLAS PREFIX=/usr install
 
     - name: Generate buildfiles for marian on android via cmake
       run: |-
         mkdir -p build 
         cd build
-        NDK="${{ github.workspace }}/android-ndk-r23b"
-        ABI="arm64-v8a"
-        MINSDK_VERSION=28
-        ANDROID_PLATFORM=28
+        NDK=${{ env.ndk }}
+        ABI=${{ env.abi }}
+        MINSDK_VERSION=${{ env.minsdk_version }}
+        ANDROID_PLATFORM=${{ env.android_platform }}
         OTHER_ANDROID_ARGS=(
             -DANDROID_ARM_NEON=TRUE
         )
