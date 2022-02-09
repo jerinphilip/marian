@@ -59,6 +59,17 @@ jobs:
       run: |-
         ccache -s # Print current cache stats
         ccache -z # Zero cache entry
+
+    - name: Build OpenBLAS for Android
+      run: |
+        # Set path to ndk-bundle
+        NDK="${{ github.workspace }}/android-ndk-r23b"
+        git clone https://github.com/xianyi/OpenBLAS
+        export PATH=${NDK}/toolchains/llvm/prebuilt/linux-x86_64/bin/:$PATH
+        make HOSTCC=gcc \
+             CC=${NDK}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android31-clang \
+             ONLY_CBLAS=1 TARGET=ARMV8
+
     - name: Generate buildfiles for marian on android via cmake
       run: |-
         mkdir -p build 
@@ -95,6 +106,7 @@ jobs:
     - name : Build marian for android
       working-directory: build
       run: |-
-          make -j2 VERBOSE=1
+          make -j2 VERBOSE=1 || echo "Failure"
+
     - name: ccache epilog
       run: 'ccache -s # Print current cache stats'
