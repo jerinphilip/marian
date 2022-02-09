@@ -250,7 +250,7 @@ else(MSVC)
     # -msse4.1 once marian can solely be compiled with intgemm ("onnxjs" will be removed in that case)
     set(INTRINSICS "-mssse3 -msimd128")
   else()
-    set(INTRINSICS "-msse4.1")
+    # Not assuming we have "-msse4.1 here"
   endif()
 
   if(USE_FBGEMM)
