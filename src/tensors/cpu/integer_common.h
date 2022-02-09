@@ -4,15 +4,13 @@
 #include "tensors/tensor_operators.h"
 #include "tensors/cpu/aligned.h"
 #include "common/io_item.h"
+#ifdef USE_INTGEMM
 #include "3rd_party/intgemm/intgemm/intgemm.h"
+#endif // USE_INTGEMM
 #if defined(WASM)
 #include "wasm_intgemm_interface.h"
 #endif
 
-#include <emmintrin.h>
-#include <immintrin.h>
-#include <tmmintrin.h>
-#include <xmmintrin.h>
 #include <cassert>
 #include <cstddef>
 
@@ -104,3 +102,4 @@ void unquantizeWemb(io::Item& item, const char * input) {
 } //integer
 } //cpu
 } //marian
+
