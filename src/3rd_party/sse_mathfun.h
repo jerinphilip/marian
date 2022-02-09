@@ -32,7 +32,7 @@
 #ifndef USE_SIMDE
 #include <xmmintrin.h>
 #else
-#include "x86/avx2.h"
+#include "x86/sse.h"
 #endif
 
 /* yes I know, the top of this file is quite ugly */
