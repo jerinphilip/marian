@@ -26,3 +26,6 @@
 [submodule "src/3rd_party/simde-no-tests"]
 	path = src/3rd_party/simde-no-tests
 	url = https://github.com/simd-everywhere/simde-no-tests/
+[submodule "src/3rd_party/faiss"]
+	path = src/3rd_party/faiss
+	url = https://github.com/facebookresearch/faiss
