@@ -80,6 +80,7 @@ jobs:
             -DTHREADS_PREFER_PTHREAD_FLAG=ON
             -DBUILD_ARCH=armv8-a
             -DUSE_INTGEMM=off
+            -DUSE_SIMDE=on
         )
         cmake \
             -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake \
