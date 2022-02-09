@@ -69,6 +69,8 @@ jobs:
         make -C OpenBLAS HOSTCC=gcc \
              CC=${NDK}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android31-clang \
              ONLY_CBLAS=1 TARGET=ARMV8
+        make PREFIX=$HOME/.local/ install
+        find $HOME/.local
 
     - name: Generate buildfiles for marian on android via cmake
       run: |-
