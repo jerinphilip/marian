@@ -22,6 +22,10 @@ if(USE_INTGEMM)
   add_subdirectory(./intgemm)
 endif(USE_INTGEMM)
 
+if(USE_SIMDE)
+  include_directories(./simde-no-tests)
+endif(USE_SIMDE)
+
 if(USE_WASM_COMPATIBLE_BLAS)
   add_subdirectory(./onnxjs)
 endif(USE_WASM_COMPATIBLE_BLAS)

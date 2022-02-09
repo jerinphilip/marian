@@ -41,6 +41,8 @@ option(GENERATE_MARIAN_INSTALL_TARGETS "Generate Marian install targets (require
 option(COMPILE_WASM "Compile (wasm compatible) marian for WASM target" OFF)
 option(USE_WASM_COMPATIBLE_SOURCE "Enable the minimal marian sources that compile to wasm. Useful for debugging wasm failures by building same sources natively" OFF)
 
+option(USE_SIMDE "Enable simde to target instruction sets" OFF)
+
 # cmake options that are dependent on USE_WASM_COMPATIBLE_SOURCE cmake option
 CMAKE_DEPENDENT_OPTION(USE_THREADS "Compile with multi-threading support" OFF
                        "USE_WASM_COMPATIBLE_SOURCE" ON)
@@ -257,6 +259,10 @@ else(MSVC)
     set(EXT_LIBS ${EXT_LIBS} fbgemm dl)
     add_definitions(-DUSE_FBGEMM=1)
   endif(USE_FBGEMM)
+
+  if(USE_SIMDE)
+    add_definitions(-DSIMDE_ENABLE_NATIVE_ALIASES=1)
+  endif(USE_SIMDE)
 
   if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 9.0)
     # Clang-10.0.0 complains when CUDA is newer than 10.1
