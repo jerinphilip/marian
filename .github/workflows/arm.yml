@@ -96,6 +96,6 @@ jobs:
     - name : Build marian for android
       working-directory: build
       run: |-
-          make -j2
+          make -j2 VERBOSE=1
     - name: ccache epilog
       run: 'ccache -s # Print current cache stats'
