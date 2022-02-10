@@ -25,6 +25,10 @@ inline int rows(Tensor& tensor) { return tensor->shape().elements() / cols(tenso
 inline int cols(Shape& shape) { return shape[-1]; }
 inline int rows(Shape& shape) { return shape.elements() / cols(shape); }
 
+// This operates on floats after processing so doesn't care about int8_t vs int16_t.
+void AddBias(marian::Tensor C, const marian::Tensor Bias);
+
+#ifdef USE_INTGEMM
 template<Type type> struct intgemm_;
 template <> struct intgemm_<Type::int8> {using width = intgemm::Int8;
                                          using type = int8_t;
@@ -33,8 +37,6 @@ template <> struct intgemm_<Type::int16> {using width = intgemm::Int16;
                                           using type = int16_t;
                                           constexpr static const Type intgemmType = Type::intgemm16;};
 
-// This operates on floats after processing so doesn't care about int8_t vs int16_t.
-void AddBias(marian::Tensor C, const marian::Tensor Bias);
 
 // For loading architecture agnostic models. We do PrepareAndTranpose, because we already transposed
 // in our binary format. Then we copy the quantizationMultiplier information at the end
@@ -98,6 +100,28 @@ void unquantizeWemb(io::Item& item, const char * input) {
         output_tensor[i] = reinterpret_cast<const Integer *>(input)[i]*(1/quantMult);
     }
 }
+
+#else
+template<Type type> struct intgemm_;
+template <> struct intgemm_<Type::int8> {using width = int8_t;
+                                         using type = int8_t;
+                                         constexpr static const Type intgemmType = Type::intgemm8;};
+template <> struct intgemm_<Type::int16> {using width = int16_t;
+                                          using type = int16_t;
+                                          constexpr static const Type intgemmType = Type::intgemm16;};
+
+template<Type vtype>
+void prepareAndTransposeB(io::Item& item, const char * input) {
+    ABORT("prepareAndTransposeB not implemented on platform");
+}
+
+template<Type vtype>
+void unquantizeWemb(io::Item& item, const char * input) {
+    ABORT("prepareAndTransposeB not implemented on platform");
+}
+
+
+#endif
 
 } //integer
 } //cpu
