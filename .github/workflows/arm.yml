@@ -118,7 +118,7 @@ jobs:
     - name : Build marian for android
       working-directory: build
       run: |-
-          make -j2 VERBOSE=1 || echo "Failure"
+          make -j2 
 
     - name: ccache epilog
       run: 'ccache -s # Print current cache stats'
