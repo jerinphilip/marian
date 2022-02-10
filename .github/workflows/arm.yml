@@ -68,20 +68,6 @@ jobs:
         ccache -s # Print current cache stats
         ccache -z # Zero cache entry
 
-    - name: Build OpenBLAS for Android
-      run: |
-        # Set path to ndk-bundle
-        NDK="${{ env.ndk }}"
-        git clone https://github.com/xianyi/OpenBLAS
-        export PATH=${NDK}/toolchains/llvm/prebuilt/linux-x86_64/bin/:$PATH
-        make -C OpenBLAS HOSTCC=gcc \
-             CC=${NDK}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android${{env.android_platform}}-clang \
-             ONLY_CBLAS=1 TARGET=ARMV8
-        INSTALL_PREFIX=${NDK}/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr
-        make -C OpenBLAS PREFIX=$INSTALL_PREFIX install
-        find $INSTALL_PREFIX
-        sudo make -C OpenBLAS PREFIX=/usr install
-
     - name: Generate buildfiles for marian on android via cmake
       run: |-
         mkdir -p build 
