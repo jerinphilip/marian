@@ -77,7 +77,7 @@ jobs:
         make -C OpenBLAS HOSTCC=gcc \
              CC=${NDK}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android${{env.android_platform}}-clang \
              ONLY_CBLAS=1 TARGET=ARMV8
-        INSTALL_PREFIX=${NDK}/toolchains/llvm/prebuilt/linux-x86_64/
+        INSTALL_PREFIX=${NDK}/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr
         make -C OpenBLAS PREFIX=$INSTALL_PREFIX install
         find $INSTALL_PREFIX
         sudo make -C OpenBLAS PREFIX=/usr install
