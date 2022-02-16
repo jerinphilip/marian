@@ -104,7 +104,9 @@ jobs:
     - name : Build marian for android
       working-directory: build
       run: |-
-          make -j2 
+          # Only build marian (lib) for now.
+          # TODO(jerin): Fix protobuf
+          make -j2 marian
 
     - name: ccache epilog
       run: 'ccache -s # Print current cache stats'
