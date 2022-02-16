@@ -102,11 +102,22 @@ void unquantizeWemb(io::Item& item, const char * input) {
 }
 
 #else
+
+struct IntgemmViaRuy {
+    struct Int8 {};
+    struct Int16 {};
+
+    template <class T>
+    static T MaxAbsolute(const T *begin, const T *end) {
+        return std::accumulate(begin, end, std::numeric_limits<T>::max(), [](const T &a, const T &b){ return std::max(std::abs(a), std::abs(b)); });
+    }
+};
+
 template<Type type> struct intgemm_;
-template <> struct intgemm_<Type::int8> {using width = int8_t;
+template <> struct intgemm_<Type::int8> {using width = IntgemmViaRuy::Int8;
                                          using type = int8_t;
                                          constexpr static const Type intgemmType = Type::intgemm8;};
-template <> struct intgemm_<Type::int16> {using width = int16_t;
+template <> struct intgemm_<Type::int16> {using width = IntgemmViaRuy::Int8;
                                           using type = int16_t;
                                           constexpr static const Type intgemmType = Type::intgemm16;};
 

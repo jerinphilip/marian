@@ -42,7 +42,7 @@ bool shifted_;
                   rows(child(0)->val()),
                   cols(child(0)->val()),
                   val_->data<int8_t>() /*output*/);
-  #else
+  #elif defined(USE_INTGEMM)
     typedef typename intgemm_<vtype>::type Integer;
       if (!shifted_) {
         intgemm_<vtype>::width::PrepareA(child(0)->val()->data(), /*input*/
@@ -57,6 +57,8 @@ bool shifted_;
                                       rows(child(0)->val()),
                                       cols(child(0)->val()));
       }
+  #else 
+    ABORT("Not implemented without INTGEMM");
   #endif
   }};
 #else
@@ -118,7 +120,7 @@ bool transposed_; /*This is only used for the output layer which has a different
                                rows(child(0)->val()),
                                val_->data<int8_t>()); /*output*/
         }
-#else
+#elif defined(USE_INTGEMM)
         if (!transposed_) {
           typedef typename intgemm_<vtype>::type Integer;
           intgemm_<vtype>::width::PrepareB(child(0)->val()->data(), /*input*/
@@ -134,6 +136,8 @@ bool transposed_; /*This is only used for the output layer which has a different
                                       cols(child(0)->val()), /*Cols and rows need to be swapped*/
                                       rows(child(0)->val())); /*Cols and rows need to be swapped*/
         }
+#else
+  ABORT("Please implement PrepareB through ruy");
 #endif
       }
     }};
@@ -201,7 +205,7 @@ public:
                     &*indices_.begin(),
                     num_cols,
                     val_->data<int8_t>());
-  #else
+  #elif defined(USE_INTGEMM)
       typedef typename intgemm_<vtype>::type Integer;
       intgemm_<vtype>::width::SelectColumnsB(
                     reinterpret_cast<Integer *>(input->data()),
@@ -209,6 +213,8 @@ public:
                     rows(input),
                     &*indices_.begin(),
                     &*indices_.end());
+  #else
+      ABORT("Not implemented. Implement SelectColumnsB");
   #endif
     }};
 #else
@@ -269,12 +275,18 @@ struct QuantMultNodeOp : public UnaryNodeOp {
         *val_->data() = *(reinterpret_cast<float *>(reinterpret_cast<Integer *>(child(0)->val()->data()) + child(0)->val()->shape().elements()));
       } else {
         if (child(0)->graph()->getBackend()->DumpQuantMult()) {
+          #if defined(USE_INTGEMM)
           intgemm::MeanStd meanstd = intgemm::GetVectorMeanStd(child(0)->val()->data(), child(0)->val()->data() + child(0)->val()->shape().elements(), true);
           intgemm::MeanStd meanstd2 = intgemm::GetVectorMeanStd(child(0)->val()->data(), child(0)->val()->data() + child(0)->val()->shape().elements());
           std::cerr << "Name: " << name() << " MeanAbs: " << meanstd.mean << " stddevAbs: " << meanstd.stddev << " Mean: " << meanstd2.mean << " stddev: "
           << meanstd2.stddev << " MaxAbs: " << intgemm::MaxAbsolute(child(0)->val()->data(), child(0)->val()->data() + child(0)->val()->shape().elements()) << std::endl;
+          #endif
         }
+        #if defined(USE_INTGEMM)
         *val_->data() = 127.0f / intgemm::MaxAbsolute(child(0)->val()->data(), child(0)->val()->data() + child(0)->val()->shape().elements());
+        #else
+        *val_->data() = 127.0f / IntgemmViaRuy::MaxAbsolute(child(0)->val()->data(), child(0)->val()->data() + child(0)->val()->shape().elements());
+        #endif
       }
     )};
 #else
@@ -345,9 +357,11 @@ public:
         float scale_a = *quant_mult_a->data();
         float scale_b = *quant_mult_b->data();
         int8PrepareBias((const int8_t *)b->data(), scale_a, 0.0 /*zero_point_a*/, scale_b, 0.0 /*zero_point_b*/, rows(b), cols(b), bias->data(), val_->data());
-    #else
+    #elif defined(USE_INTGEMM)
         float unquant_mult = (-1)*((127.0f / *quant_mult_a->data())*(127.0f / *quant_mult_b->data()))/(127.0f); //Minus one to invert add_ps later on
         intgemm::Int8Shift::PrepareBias((const int8_t *)b->data(), rows(b), cols(b), intgemm::callbacks::UnquantizeAndAddBiasAndWrite(unquant_mult, bias->data(), val_->data()));
+    #else
+        ABORT("Int8Shift::PrepareBias not available yet");
     #endif
       }
     }};
@@ -382,9 +396,11 @@ public:
     float scale_a = *quant_mult_a->data();
     float scale_b = *quant_mult_b->data();
     int8PrepareBias((const int8_t *)b->data(), scale_a, 0.0 /*zero_point_a*/, scale_b, 0.0 /*zero_point_b*/, rows(b), cols(b), nullptr/*input_bias*/, val_->data());
-  #else
+  #elif defined(USE_INTGEMM)
     float unquant_mult = (-1)*((127.0f / *quant_mult_a->data())*(127.0f / *quant_mult_b->data()))/(127.0f); //Minus one to invert add_ps later on
     intgemm::Int8Shift::PrepareBias((const int8_t *)b->data(), rows(b), cols(b), intgemm::callbacks::UnquantizeAndWrite(unquant_mult, val_->data()));
+  #else
+    ABORT("Int8Shift PrepareBias not implemented");
   #endif
     }};
 #else
@@ -433,7 +449,7 @@ public:
               "Int16::Multiply is not implemented for wasm.");
           ABORT_IF(intgemm_<vtype>::intgemmType == Type::intgemm8,
               "Int8::Multiply is not implemented for wasm.");
-      #else
+      #elif defined(USE_INTGEMM)
           typedef typename intgemm_<vtype>::type Integer;
           intgemm_<vtype>::width::Multiply(reinterpret_cast<Integer *>(child(0)->val()->data()), /*A*/
                                            reinterpret_cast<Integer *>(child(1)->val()->data()), /*B*/
@@ -441,6 +457,8 @@ public:
                                            cols(child(0)->val()),
                                            cols(child(1)->val()),
                                            intgemm::callbacks::UnquantizeAndWrite(unquant_mult, val_->data()));
+      #else
+        ABORT("Implement Multiply on ARM, please.");
       #endif
     }};
 #else
@@ -507,7 +525,7 @@ public:
                                 cols(child(0)->val()),
                                 cols(child(1)->val()),
                                 val_->data());
-      #else
+      #elif defined(USE_INTGEMM)
           typedef typename intgemm_<vtype>::type Integer;
           if (!shifted_) {
             intgemm_<vtype>::width::Multiply(reinterpret_cast<Integer *>(child(0)->val()->data()), /*A*/
@@ -524,6 +542,8 @@ public:
                                   cols(child(1)->val()),                                          /*child(2) is bias*/
                                   intgemm::callbacks::UnquantizeAndAddBiasAndWrite(unquant_mult, child(2)->val()->data(), val_->data()));
           }
+      #else
+        ABORT("Not implemented, int8Shift::Multiply / Int8");
       #endif
     }};
 #else
