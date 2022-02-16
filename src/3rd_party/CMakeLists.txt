@@ -97,10 +97,6 @@ if(USE_SENTENCEPIECE)
     PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
   endif()
 
-  if(ANDROID)
-    target_link_libraries(libprotobuf INTERFACE "-landroid" "-llog")
-  endif()
-
   list(APPEND SENTENCEPIECE_TARGETS sentencepiece-static sentencepiece_train-static)
   if (NOT USE_WASM_COMPATIBLE_SOURCE)
     list(APPEND SENTENCEPIECE_TARGETS spm_decode spm_encode spm_export_vocab spm_normalize spm_train)
