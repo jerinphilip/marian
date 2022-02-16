@@ -149,8 +149,8 @@ void switchtoMultinodeLogging(std::string nodeIdStr) {
 
 namespace marian {
   std::string noinline getCallStack(size_t skipLevels) {
-  #ifdef WASM_COMPATIBLE_SOURCE
-    return "Callstacks not supported in WASM builds currently";
+  #if defined(WASM_COMPATIBLE_SOURCE) || defined(ANDROID)
+    return "Callstacks not supported in WASM or Android builds currently";
   #else
     return ::Microsoft::MSR::CNTK::DebugUtil::GetCallStack(skipLevels + 2, /*makeFunctionNamesStandOut=*/true);
   #endif
