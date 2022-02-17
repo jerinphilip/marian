@@ -43,8 +43,22 @@ template <> struct intgemm_<Type::int16> {using width = intgemm::Int16;
 #else // USE_INTGEMM
 
 struct IntgemmViaRuy {
-    struct Int8 {};
-    struct Int16 {};
+    using Index = std::uint32_t;
+
+    struct Int8 {
+        using Type = int8_t;
+        static void PrepareBQuantizedTransposed(const Type *input, Type *output, Index rows, Index cols){
+            std::memcpy(output, input, /*count=*/sizeof(Type) * (rows * cols));
+        }
+
+    };
+    struct Int16 {
+        using Type = int16_t;
+        static void PrepareBQuantizedTransposed(const Type *input, Type *output, Index rows, Index cols){
+            ABORT("Not implemented, implement");
+        }
+
+    };
 
     template <class T>
     static T MaxAbsolute(const T *begin, const T *end) {
@@ -54,10 +68,10 @@ struct IntgemmViaRuy {
 
 template<Type type> struct intgemm_;
 template <> struct intgemm_<Type::int8> {using width = IntgemmViaRuy::Int8;
-                                         using type = int8_t;
+                                         using type = IntgemmViaRuy::Int8::Type;
                                          constexpr static const Type intgemmType = Type::intgemm8;};
-template <> struct intgemm_<Type::int16> {using width = IntgemmViaRuy::Int8;
-                                          using type = int16_t;
+template <> struct intgemm_<Type::int16> {using width = IntgemmViaRuy::Int16;
+                                          using type = IntgemmViaRuy::Int16::Type;
                                           constexpr static const Type intgemmType = Type::intgemm16;};
 
 #endif // USE_INTGEMM
@@ -89,14 +103,11 @@ void prepareAndTransposeB(io::Item& item, const char * input) {
                                         (Index)rows(item.shape),  //Since we only transposed, but didn't update the shape when constructing the binary 
                                         (Index)cols(item.shape), //rows here returns the columns of the transposed input matrix, and cols -> the rows
                                         (int8_t *)output_tensor);
-    #elif USE_INTGEMM
+    #else
         intgemm_<vtype>::width::PrepareBQuantizedTransposed(reinterpret_cast<const Integer *>(input),
                                                    output_tensor,
                                                    rows(item.shape),  //Since we only transposed, but didn't update the shape when constructing the binary, 
                                                    cols(item.shape)); //rows here returns the columns of the transposed input matrix, and cols -> the rows
-    #else // USE_INTGEMM
-        // Try to activate ruy path
-        ABORT("Not implemented, bring in ruy!");
     #endif
     } else {
         Integer * aligned_input = reinterpret_cast<Integer *>(genericMalloc(512, rows(item.shape)*cols(item.shape)*sizeof(Integer)));
@@ -109,14 +120,11 @@ void prepareAndTransposeB(io::Item& item, const char * input) {
                                         (Index)rows(item.shape),  //Since we only transposed, but didn't update the shape when constructing the binary, 
                                         (Index)cols(item.shape), //rows here returns the columns of the transposed input matrix, and cols -> the rows
                                         reinterpret_cast<int8_t *>(aligned_output));
-    #elif USE_INTGEMM
+    #else
         intgemm_<vtype>::width::PrepareBQuantizedTransposed(reinterpret_cast<const Integer *>(aligned_input),
                                                    reinterpret_cast<Integer *>(aligned_output),
                                                    rows(item.shape),  //Since we only transposed, but didn't update the shape when constructing the binary, 
                                                    cols(item.shape)); //rows here returns the columns of the transposed input matrix, and cols -> the rows
-    #else // USE_INTGEMM
-        // Try to activate ruy path.
-        ABORT("Not implemented, bring in ruy!");
     #endif
         // Copy to output tensor
         std::copy(aligned_output, aligned_output + rows(item.shape)*cols(item.shape), output_tensor);
