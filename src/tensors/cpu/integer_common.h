@@ -6,6 +6,8 @@
 #include "common/io_item.h"
 #ifdef USE_INTGEMM
 #include "3rd_party/intgemm/intgemm/intgemm.h"
+#else // USE_INTGEMM
+#include <ruy/ruy.h>
 #endif // USE_INTGEMM
 #if defined(WASM)
 #include "wasm_intgemm_interface.h"
@@ -41,6 +43,7 @@ template <> struct intgemm_<Type::int16> {using width = intgemm::Int16;
 
 
 #else // USE_INTGEMM
+
 
 struct IntgemmViaRuy {
     using Index = std::uint32_t;
