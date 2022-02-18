@@ -8,6 +8,7 @@
 #include "3rd_party/intgemm/intgemm/intgemm.h"
 #else // USE_INTGEMM
 #include <ruy/ruy.h>
+#include "ruy_adapter.h"
 #endif // USE_INTGEMM
 #if defined(WASM)
 #include "wasm_intgemm_interface.h"
@@ -43,31 +44,6 @@ template <> struct intgemm_<Type::int16> {using width = intgemm::Int16;
 
 
 #else // USE_INTGEMM
-
-
-struct IntgemmViaRuy {
-    using Index = std::uint32_t;
-
-    struct Int8 {
-        using Type = int8_t;
-        static void PrepareBQuantizedTransposed(const Type *input, Type *output, Index rows, Index cols){
-            std::memcpy(output, input, /*count=*/sizeof(Type) * (rows * cols));
-        }
-
-    };
-    struct Int16 {
-        using Type = int16_t;
-        static void PrepareBQuantizedTransposed(const Type *input, Type *output, Index rows, Index cols){
-            ABORT("Not implemented, implement");
-        }
-
-    };
-
-    template <class T>
-    static T MaxAbsolute(const T *begin, const T *end) {
-        return std::accumulate(begin, end, std::numeric_limits<T>::max(), [](const T &a, const T &b){ return std::max(std::abs(a), std::abs(b)); });
-    }
-};
 
 template<Type type> struct intgemm_;
 template <> struct intgemm_<Type::int8> {using width = IntgemmViaRuy::Int8;

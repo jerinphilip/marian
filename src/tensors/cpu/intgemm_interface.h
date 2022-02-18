@@ -58,7 +58,13 @@ bool shifted_;
                                       cols(child(0)->val()));
       }
   #else 
-    ABORT("Not implemented without INTGEMM");
+  // Copied from above. No shifted in ARM.
+    typedef typename intgemm_<vtype>::type Integer;
+    intgemm_<vtype>::width::PrepareA(child(0)->val()->data(), /*input*/
+                                      val_->data<Integer>(), /*output*/
+                                      *child(1)->val()->data(), /*Quant Mult*/
+                                      rows(child(0)->val()),
+                                      cols(child(0)->val()));
   #endif
   }};
 #else
@@ -120,7 +126,7 @@ bool transposed_; /*This is only used for the output layer which has a different
                                rows(child(0)->val()),
                                val_->data<int8_t>()); /*output*/
         }
-#elif defined(USE_INTGEMM)
+#else
         if (!transposed_) {
           typedef typename intgemm_<vtype>::type Integer;
           intgemm_<vtype>::width::PrepareB(child(0)->val()->data(), /*input*/
@@ -136,8 +142,6 @@ bool transposed_; /*This is only used for the output layer which has a different
                                       cols(child(0)->val()), /*Cols and rows need to be swapped*/
                                       rows(child(0)->val())); /*Cols and rows need to be swapped*/
         }
-#else
-  ABORT("Please implement PrepareB through ruy");
 #endif
       }
     }};
@@ -205,7 +209,7 @@ public:
                     &*indices_.begin(),
                     num_cols,
                     val_->data<int8_t>());
-  #elif defined(USE_INTGEMM)
+  #else
       typedef typename intgemm_<vtype>::type Integer;
       intgemm_<vtype>::width::SelectColumnsB(
                     reinterpret_cast<Integer *>(input->data()),
@@ -213,8 +217,6 @@ public:
                     rows(input),
                     &*indices_.begin(),
                     &*indices_.end());
-  #else
-      ABORT("Not implemented. Implement SelectColumnsB");
   #endif
     }};
 #else
@@ -361,7 +363,7 @@ public:
         float unquant_mult = (-1)*((127.0f / *quant_mult_a->data())*(127.0f / *quant_mult_b->data()))/(127.0f); //Minus one to invert add_ps later on
         intgemm::Int8Shift::PrepareBias((const int8_t *)b->data(), rows(b), cols(b), intgemm::callbacks::UnquantizeAndAddBiasAndWrite(unquant_mult, bias->data(), val_->data()));
     #else
-        ABORT("Int8Shift::PrepareBias not available yet");
+        IntgemmViaRuy::PrepareBias(bias->data(), val_->data(), rows(b), cols(b));
     #endif
       }
     }};
@@ -458,7 +460,7 @@ public:
                                            cols(child(1)->val()),
                                            intgemm::callbacks::UnquantizeAndWrite(unquant_mult, val_->data()));
       #else
-        ABORT("Implement Multiply on ARM, please.");
+          ABORT("Fix this bit with callbacks for multiply!");
       #endif
     }};
 #else
