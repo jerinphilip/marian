@@ -545,7 +545,17 @@ public:
                                   intgemm::callbacks::UnquantizeAndAddBiasAndWrite(unquant_mult, child(2)->val()->data(), val_->data()));
           }
       #else
-        ABORT("Not implemented, int8Shift::Multiply / Int8");
+        typedef typename intgemm_<vtype>::type Integer;
+        intgemm_<vtype>::width::Multiply(reinterpret_cast<Integer *>(child(0)->val()->data()), /*A*/
+                                   reinterpret_cast<Integer *>(child(1)->val()->data()), /*B*/
+                                   child(2)->val()->data(),  /*child(2) is bias*/
+                                   val_->data(), /*output*/
+                                   rows(child(0)->val()),
+                                   cols(child(0)->val()),
+                                   cols(child(1)->val()),                                          
+                                   unquant_mult);
+
+
       #endif
     }};
 #else

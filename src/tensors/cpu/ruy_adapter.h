@@ -37,8 +37,8 @@ public:
   }
 
 private:
-  T *storage_;
   size_t size_;
+  T *storage_;
 };
 
 // TODO: Workout similar to ruy. enum value is causing type/value complaints.
@@ -299,8 +299,7 @@ struct IntgemmViaRuy {
         static void SelectColumnsB(const Type *, Type *, Index, const Index *, const Index *) {
             UnsupportedCPUError();
         }
-        template <typename Callback>
-        static void Multiply(const Type *, const Type *, Index, Index, Index, Callback) {
+        static void Multiply(const Type *, const Type *, const float *, const float *, Index, Index, Index, float) {
             UnsupportedCPUError();
         }
 
@@ -319,7 +318,50 @@ struct IntgemmViaRuy {
            detail::Preprocess<detail::kHighestPath>::quantize(input, output, quant_mult, rows, cols);
         }
 
-
+        static void Multiply(const Type *input_A_prepared, const Type *input_B_prepared, const float *bias_prepared, 
+                float *output, Index rows_A, Index width, Index cols_B, float unquant_multiplier) {
+           // It is expected that somehow we have managed to call all prepare by the time
+           // we are here, with inputs (prepared) in int8_t. All that's left to do is use
+           // ruy for multiply and then start with the reverse ops to get to fp32.
+       
+           // Use ruy to multiply.
+           // The following is adapted from
+           // https://github.com/google/ruy/blob/878283640de7946a43053e8ebf4f15114fbc9156/example/example.cc#L129-L152
+       
+           ruy::Context context;
+           ruy::Matrix<std::int8_t> lhs;
+           ruy::MakeSimpleLayout(rows_A, width, ruy::Order::kRowMajor,
+                                 lhs.mutable_layout());
+           lhs.set_data(input_A_prepared);
+       
+           // PRINT_MATRIX_DEBUG(input_A_prepared, rows_A, width, Order::RowMajor);
+       
+           ruy::Matrix<std::int8_t> rhs;
+           ruy::MakeSimpleLayout(width, cols_B, ruy::Order::kColMajor,
+                                 rhs.mutable_layout());
+           rhs.set_data(input_B_prepared);
+       
+           // PRINT_MATRIX_DEBUG(input_B_prepared, width, cols_B, Order::ColMajor);
+       
+           ruy::Matrix<std::int32_t> dst;
+           ruy::MakeSimpleLayout(rows_A, cols_B, ruy::Order::kRowMajor,
+                                 dst.mutable_layout());
+       
+           detail::AlignedVector<std::int32_t> dst_data(rows_A * cols_B);
+           std::int32_t *dest_ptr = dst_data.data();
+       
+           dst.set_data(dest_ptr);
+       
+           // When Dst is int32, mul_params is unused.
+           ruy::MulParams<std::int32_t, std::int32_t> mul_params;
+           ruy::Mul(lhs, rhs, mul_params, &context, &dst);
+       
+           // Unquantizes, then adds bias in a single statement on the output.
+           // float unquant_multiplier = (1.0f * scale_output) / (scale_A * scale_B);
+           detail::Preprocess<detail::kHighestPath>::unquantizeAddBias(
+               dest_ptr, bias_prepared, unquant_multiplier, rows_A, cols_B,
+               output);
+           }
     };
 
     struct Int16: IntBase<int16_t> {
