@@ -280,31 +280,27 @@ struct IntgemmViaRuy {
 
         using Type = T;
         static void Quantize(const float *, Type *, float, Index) {
-            UnsupportedCPUError();
+            ABORT("Quantize unsupported");
         }
 
         static void PrepareA(const float *input, Type *output, float quant_mult, Index rows, Index cols) {
-            UnsupportedCPUError();
+            ABORT("PrepareA Unsupported");
         }
 
         static void PrepareB(const float *, Type *, float, Index, Index) {
-            UnsupportedCPUError();
+            ABORT("PrepareB Unsupported");
         }
         static void PrepareBQuantizedTransposed(const Type *, Type *, Index, Index) {
-            UnsupportedCPUError();
+            ABORT("PrepareBQuantizedTransposed Unsupported");
         }
         static void PrepareBTransposed(const float *, Type *, float, Index, Index) {
-            UnsupportedCPUError();
+            ABORT("PrepareBTransposed Unsupported");
         }
         static void SelectColumnsB(const Type *, Type *, Index, const Index *, const Index *) {
-            UnsupportedCPUError();
+            ABORT("SelectColumnsB Unsupported");
         }
         static void Multiply(const Type *, const Type *, const float *, const float *, Index, Index, Index, float) {
-            UnsupportedCPUError();
-        }
-
-        inline static void UnsupportedCPUError(){
-            ABORT("Unsupported CPU");
+            ABORT("Multiply Unsupported");
         }
 
     };
@@ -374,7 +370,11 @@ struct IntgemmViaRuy {
     }
 
     static void PrepareBias(const float *input, float *output, Index rows, Index cols) {
-        std::memcpy(output, input, /*count=*/sizeof(float) * (1 * cols));
+        if(input != nullptr){
+            std::memcpy(output, input, /*count=*/sizeof(float) * (1 * cols));
+        } else {
+            std::fill(output, output + 1*cols, 0);
+        }
     }
 
 };

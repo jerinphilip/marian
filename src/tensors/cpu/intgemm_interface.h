@@ -363,7 +363,7 @@ public:
         float unquant_mult = (-1)*((127.0f / *quant_mult_a->data())*(127.0f / *quant_mult_b->data()))/(127.0f); //Minus one to invert add_ps later on
         intgemm::Int8Shift::PrepareBias((const int8_t *)b->data(), rows(b), cols(b), intgemm::callbacks::UnquantizeAndAddBiasAndWrite(unquant_mult, bias->data(), val_->data()));
     #else
-        IntgemmViaRuy::PrepareBias(bias->data(), val_->data(), rows(b), cols(b));
+        IntgemmViaRuy::PrepareBias(nullptr, val_->data(), rows(b), cols(b));
     #endif
       }
     }};
@@ -402,7 +402,7 @@ public:
     float unquant_mult = (-1)*((127.0f / *quant_mult_a->data())*(127.0f / *quant_mult_b->data()))/(127.0f); //Minus one to invert add_ps later on
     intgemm::Int8Shift::PrepareBias((const int8_t *)b->data(), rows(b), cols(b), intgemm::callbacks::UnquantizeAndWrite(unquant_mult, val_->data()));
   #else
-    ABORT("Int8Shift PrepareBias not implemented");
+    IntgemmViaRuy::PrepareBias(nullptr, val_->data(), rows(b), cols(b));
   #endif
     }};
 #else
