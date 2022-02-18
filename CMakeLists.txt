@@ -559,6 +559,10 @@ if(COMPILE_CPU)
       set(EXT_LIBS ${EXT_LIBS} intgemm)       # Move the intgemm bits on top since they compile with every single variant
   endif(USE_INTGEMM)
 
+  if(USE_RUY)
+    set(EXT_LIBS ${EXT_LIBS} ruy)
+  endif(USE_RUY)
+
   add_definitions(-DCOMPILE_CPU=1)        # Move the compile CPU definition on top since we want to compile intgemm when we set compile CPU
                                           # in case a BLAS vendor is not found, we have a runtime error, although we should probably not allow the compilation to go on
                                           # if there are BLAS vendors, we have other runtime checks with sane error messages.
