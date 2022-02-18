@@ -310,9 +310,25 @@ struct IntgemmViaRuy {
         static void PrepareBQuantizedTransposed(const Type *input, Type *output, Index rows, Index cols){
             std::memcpy(output, input, /*count=*/sizeof(Type) * (rows * cols));
         }
+
+        static void PrepareBTransposed(const float *input, Type *output, float quant_mult, Index rows, Index cols) {
+          detail::Preprocess<detail::kHighestPath>::quantize(input, output, quant_mult, rows, cols);
+        }
+
         static void PrepareA(const float *input, int8_t *output, float quant_mult, Index rows, Index cols) {
            detail::Preprocess<detail::kHighestPath>::quantize(input, output, quant_mult, rows, cols);
         }
+
+        static void SelectColumnsB(const Type *input, Type *output, Index width, const Index *cols, const Index *cols_end) {
+          // B_prepared is expected to be col-major, for our implementation via ruy. If
+          // col-major we can memcpy the respective column entries as they're
+          // sequential. There are width=rows entries.
+          Index num_cols = std::distance(cols, cols_end);
+          for (Index c = 0; c < num_cols; ++c) {
+            std::memcpy(&(output[c * width]), &(input[cols[c] * width]), width);
+          }
+        }
+
 
         static void Multiply(const Type *input_A_prepared, const Type *input_B_prepared, const float *bias_prepared, 
                 float *output, Index rows_A, Index width, Index cols_B, float unquant_multiplier) {
