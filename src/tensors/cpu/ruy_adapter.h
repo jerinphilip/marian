@@ -13,7 +13,6 @@
 using Index = std::uint32_t;
 
 
-
 namespace detail {
 
 template <class T> class AlignedVector {
@@ -79,6 +78,7 @@ template <class Path> struct Preprocess {
       }
     }
   }
+
   static void unquantizeAddBias(const int32_t *input,
                                 const float *input_bias_prepared,
                                 float unquant_multiplier, Index rows_A,
@@ -88,6 +88,18 @@ template <class Path> struct Preprocess {
         Index idx = i * cols_B + j;
         output[idx] =
             (input[idx] * unquant_multiplier) + input_bias_prepared[j];
+      }
+    }
+  }
+
+  static void unquantize(const int32_t *input,
+                                float unquant_multiplier, Index rows_A,
+                                Index cols_B, float *output) {
+    for (size_t i = 0; i < rows_A; i++) {
+      for (size_t j = 0; j < cols_B; j++) {
+        Index idx = i * cols_B + j;
+        output[idx] =
+            (input[idx] * unquant_multiplier);
       }
     }
   }
@@ -252,8 +264,7 @@ template <> struct Preprocess<kNeon> {
 
     while (Input != InputEnd) {
       // Bias cycles every column for addition.
-      const float32x4_t *Bias =
-          reinterpret_cast<const float32x4_t *>(input_bias_prepared);
+      const float32x4_t *Bias = reinterpret_cast<const float32x4_t *>(input_bias_prepared);
 
       // InputEnd needs to be determined to end the while loop below.
       const int32x4_t *RowEnd = reinterpret_cast<const int32x4_t *>(
@@ -265,6 +276,33 @@ template <> struct Preprocess<kNeon> {
         float32x4_t floatInput = vcvtq_f32_s32(*Input++);
         float32x4_t unquantized = vmulq_f32(floatInput, multiplier);
         *Output++ = vaddq_f32(unquantized, *Bias++);
+      }
+    }
+  }
+
+  static void unquantize(const int32_t *input,
+                                float unquant_multiplier, Index rows_A,
+                                Index cols_B, float *output) {
+    // Set all registers in lane from same scalar value.
+    float32x4_t multiplier = vdupq_n_f32(unquant_multiplier);
+    const int32x4_t *Input = reinterpret_cast<const int32x4_t *>(input);
+    const int32x4_t *InputEnd =
+        reinterpret_cast<const int32x4_t *>(input + rows_A * cols_B);
+    float32x4_t *Output = reinterpret_cast<float32x4_t *>(output);
+
+    while (Input != InputEnd) {
+      // Bias cycles every column for addition.
+
+      // InputEnd needs to be determined to end the while loop below.
+      const int32x4_t *RowEnd = reinterpret_cast<const int32x4_t *>(
+          reinterpret_cast<const int32_t *>(Input) + cols_B);
+
+      while (Input != RowEnd) {
+        // Operation happening for 4-elements together:
+        // output = [int32_t]input * [float]quant_mult + [float]bias;
+        float32x4_t floatInput = vcvtq_f32_s32(*Input++);
+        float32x4_t unquantized = vmulq_f32(floatInput, multiplier);
+        *Output++ = unquantized;
       }
     }
   }
@@ -299,8 +337,13 @@ struct IntgemmViaRuy {
         static void SelectColumnsB(const Type *, Type *, Index, const Index *, const Index *) {
             ABORT("SelectColumnsB Unsupported");
         }
+
         static void Multiply(const Type *, const Type *, const float *, const float *, Index, Index, Index, float) {
-            ABORT("Multiply Unsupported");
+            ABORT("Multiply (A*B + bias) Unsupported");
+        }
+
+        static void Multiply(const Type *, const Type *, const float *, Index, Index, Index, float) {
+            ABORT("Multiply (A*B) Unsupported");
         }
 
     };
@@ -308,18 +351,22 @@ struct IntgemmViaRuy {
     struct Int8: IntBase<int8_t> {
         using Type = int8_t;
         static void PrepareBQuantizedTransposed(const Type *input, Type *output, Index rows, Index cols){
-            std::memcpy(output, input, /*count=*/sizeof(Type) * (rows * cols));
+          LOG(info, "Calling PrepareBQuantizedTransposed");
+          std::memcpy(output, input, /*count=*/sizeof(Type) * (rows * cols));
         }
 
         static void PrepareBTransposed(const float *input, Type *output, float quant_mult, Index rows, Index cols) {
+          LOG(info, "Calling PrepareBTransposed with quant_mult = {}", quant_mult);
           detail::Preprocess<detail::kHighestPath>::quantize(input, output, quant_mult, rows, cols);
         }
 
         static void PrepareA(const float *input, int8_t *output, float quant_mult, Index rows, Index cols) {
-           detail::Preprocess<detail::kHighestPath>::quantize(input, output, quant_mult, rows, cols);
+          LOG(info, "Calling PrepareA quant_mult = {}", quant_mult);
+          detail::Preprocess<detail::kHighestPath>::quantize(input, output, quant_mult, rows, cols);
         }
 
         static void SelectColumnsB(const Type *input, Type *output, Index width, const Index *cols, const Index *cols_end) {
+          LOG(info, "Calling SelectColumnsB");
           // B_prepared is expected to be col-major, for our implementation via ruy. If
           // col-major we can memcpy the respective column entries as they're
           // sequential. There are width=rows entries.
@@ -332,6 +379,7 @@ struct IntgemmViaRuy {
 
         static void Multiply(const Type *input_A_prepared, const Type *input_B_prepared, const float *bias_prepared, 
                 float *output, Index rows_A, Index width, Index cols_B, float unquant_multiplier) {
+           LOG(info, "Calling Multiply A*B + bias");
            // It is expected that somehow we have managed to call all prepare by the time
            // we are here, with inputs (prepared) in int8_t. All that's left to do is use
            // ruy for multiply and then start with the reverse ops to get to fp32.
@@ -374,6 +422,52 @@ struct IntgemmViaRuy {
                dest_ptr, bias_prepared, unquant_multiplier, rows_A, cols_B,
                output);
            }
+
+        static void Multiply(const Type *input_A_prepared, const Type *input_B_prepared,
+                float *output, Index rows_A, Index width, Index cols_B, float unquant_multiplier) {
+           LOG(info, "Calling Multiply A*B");
+           // It is expected that somehow we have managed to call all prepare by the time
+           // we are here, with inputs (prepared) in int8_t. All that's left to do is use
+           // ruy for multiply and then start with the reverse ops to get to fp32.
+       
+           // Use ruy to multiply.
+           // The following is adapted from
+           // https://github.com/google/ruy/blob/878283640de7946a43053e8ebf4f15114fbc9156/example/example.cc#L129-L152
+       
+           ruy::Context context;
+           ruy::Matrix<std::int8_t> lhs;
+           ruy::MakeSimpleLayout(rows_A, width, ruy::Order::kRowMajor,
+                                 lhs.mutable_layout());
+           lhs.set_data(input_A_prepared);
+       
+           // PRINT_MATRIX_DEBUG(input_A_prepared, rows_A, width, Order::RowMajor);
+       
+           ruy::Matrix<std::int8_t> rhs;
+           ruy::MakeSimpleLayout(width, cols_B, ruy::Order::kColMajor,
+                                 rhs.mutable_layout());
+           rhs.set_data(input_B_prepared);
+       
+           // PRINT_MATRIX_DEBUG(input_B_prepared, width, cols_B, Order::ColMajor);
+       
+           ruy::Matrix<std::int32_t> dst;
+           ruy::MakeSimpleLayout(rows_A, cols_B, ruy::Order::kRowMajor,
+                                 dst.mutable_layout());
+       
+           detail::AlignedVector<std::int32_t> dst_data(rows_A * cols_B);
+           std::int32_t *dest_ptr = dst_data.data();
+       
+           dst.set_data(dest_ptr);
+       
+           // When Dst is int32, mul_params is unused.
+           ruy::MulParams<std::int32_t, std::int32_t> mul_params;
+           ruy::Mul(lhs, rhs, mul_params, &context, &dst);
+       
+           // Unquantizes, then adds bias in a single statement on the output.
+           // float unquant_multiplier = (1.0f * scale_output) / (scale_A * scale_B);
+           detail::Preprocess<detail::kHighestPath>::unquantize(
+               dest_ptr, unquant_multiplier, rows_A, cols_B,
+               output);
+           }
     };
 
     struct Int16: IntBase<int16_t> {
@@ -386,11 +480,7 @@ struct IntgemmViaRuy {
     }
 
     static void PrepareBias(const float *input, float *output, Index rows, Index cols) {
-        if(input != nullptr){
-            std::memcpy(output, input, /*count=*/sizeof(float) * (1 * cols));
-        } else {
-            std::fill(output, output + 1*cols, 0);
-        }
+          std::memcpy(output, input, /*count=*/sizeof(float) * (1 * cols));
     }
 
 };
