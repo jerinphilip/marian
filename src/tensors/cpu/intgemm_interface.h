@@ -60,6 +60,7 @@ bool shifted_;
   #else 
   // Copied from above. No shifted in ARM.
     typedef typename intgemm_<vtype>::type Integer;
+    LOG(info, "quantMult_ = {}", quantMult_);
     intgemm_<vtype>::width::PrepareA(child(0)->val()->data(), /*input*/
                                       val_->data<Integer>(), /*output*/
                                       *child(1)->val()->data(), /*Quant Mult*/
@@ -460,7 +461,15 @@ public:
                                            cols(child(1)->val()),
                                            intgemm::callbacks::UnquantizeAndWrite(unquant_mult, val_->data()));
       #else
-          ABORT("Fix this bit with callbacks for multiply!");
+        typedef typename intgemm_<vtype>::type Integer;
+        intgemm_<vtype>::width::Multiply(reinterpret_cast<Integer *>(child(0)->val()->data()), /*A*/
+                                   reinterpret_cast<Integer *>(child(1)->val()->data()), /*B*/
+                                   val_->data(), /*output*/
+                                   rows(child(0)->val()),
+                                   cols(child(0)->val()),
+                                   cols(child(1)->val()),                                          
+                                   unquant_mult);
+
       #endif
     }};
 #else
