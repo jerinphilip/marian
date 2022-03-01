@@ -60,7 +60,7 @@ bool shifted_;
   #else 
   // Copied from above. No shifted in ARM.
     typedef typename intgemm_<vtype>::type Integer;
-    LOG(info, "quantMult_ = {}", quantMult_);
+    LOG(info, "PrepareA supplied quantMult_ = {}", quantMult_);
     intgemm_<vtype>::width::PrepareA(child(0)->val()->data(), /*input*/
                                       val_->data<Integer>(), /*output*/
                                       *child(1)->val()->data(), /*Quant Mult*/
@@ -128,6 +128,7 @@ bool transposed_; /*This is only used for the output layer which has a different
                                val_->data<int8_t>()); /*output*/
         }
 #else
+        LOG(info, "PrepareBTransposed quantMult {}", *child(1)->val()->data());
         if (!transposed_) {
           typedef typename intgemm_<vtype>::type Integer;
           intgemm_<vtype>::width::PrepareB(child(0)->val()->data(), /*input*/
@@ -403,6 +404,8 @@ public:
     float unquant_mult = (-1)*((127.0f / *quant_mult_a->data())*(127.0f / *quant_mult_b->data()))/(127.0f); //Minus one to invert add_ps later on
     intgemm::Int8Shift::PrepareBias((const int8_t *)b->data(), rows(b), cols(b), intgemm::callbacks::UnquantizeAndWrite(unquant_mult, val_->data()));
   #else
+    const float *bias = nullptr;
+    float *bias_prepared = val_->data();
     IntgemmViaRuy::PrepareBias(nullptr, val_->data(), rows(b), cols(b));
   #endif
     }};

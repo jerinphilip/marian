@@ -476,11 +476,19 @@ struct IntgemmViaRuy {
 
     template <class T>
     static T MaxAbsolute(const T *begin, const T *end) {
-        return std::accumulate(begin, end, std::numeric_limits<T>::max(), [](const T &a, const T &b){ return std::max(std::abs(a), std::abs(b)); });
+      T result = 0;
+      for(auto p = begin; p < end; ++p){
+        result = std::max(result, std::abs(*p));
+      }
+      return result;
     }
 
     static void PrepareBias(const float *input, float *output, Index rows, Index cols) {
-          std::memcpy(output, input, /*count=*/sizeof(float) * (1 * cols));
+          if(input != nullptr){
+            std::memcpy(output, input, /*count=*/sizeof(float) * (1 * cols));
+          } else {
+            std::fill(output, output+ cols, 0);
+          }
     }
 
 };
