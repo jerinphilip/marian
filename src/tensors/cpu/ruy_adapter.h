@@ -5,7 +5,6 @@
 #include "ruy/platform.h"
 #include "ruy/system_aligned_alloc.h"
 
-#define RUY_PLATFORM_NEON 1
 #if RUY_PLATFORM_NEON
 #include <arm_neon.h>
 #endif
