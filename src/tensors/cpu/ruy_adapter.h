@@ -16,10 +16,11 @@
 #include <arm_neon.h>
 #endif
 
-namespace marian::cpu::integer {
+namespace marian {
+namespace cpu {
+namespace integer {
 
 using Index = std::uint32_t;
-
 
 /*
  * An AlignedVector is similar to intgemm's aligned allocations. Defined here
@@ -506,8 +507,7 @@ struct IntgemmViaRuy {
 
       // Unquantizes, then adds bias in a single statement on the output.
       // float unquant_multiplier = (1.0f * scale_output) / (scale_A * scale_B);
-      Preprocess<kHighestPath>::unquantize(
-          dest_ptr, unquant_multiplier, rows_A, cols_B, output);
+      Preprocess<kHighestPath>::unquantize(dest_ptr, unquant_multiplier, rows_A, cols_B, output);
     }
   };
 
@@ -535,4 +535,6 @@ struct IntgemmViaRuy {
   }
 };
 
-}
+}  // namespace integer
+}  // namespace cpu
+}  // namespace marian
