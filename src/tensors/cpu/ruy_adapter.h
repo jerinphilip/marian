@@ -1,3 +1,10 @@
+/*
+ * This file follows intgemm and is a means of retrofitting ruy into the intgemm based wiring in
+ * `intgemm_interface.h`. ruy is an inference backend used in tensorflow and android deployment and
+ * has an optimized ARM backend for the multiply operations required. Optimized code for quantize,
+ * unquantize, transpose are added separately to connect the multiply library to marian.
+ */
+
 #pragma once
 #include <algorithm>
 #include <cmath>
@@ -13,6 +20,10 @@ using Index = std::uint32_t;
 
 namespace detail {
 
+/*
+ * An AlignedVector is similar to intgemm's aligned allocations. Defined here
+ * independently because we are ignoring intgemm path entirely on ARM.
+ */
 template <class T>
 class AlignedVector {
 public:
@@ -36,20 +47,22 @@ private:
   T *storage_;
 };
 
-// TODO: Workout similar to ruy. enum value is causing type/value complaints.
-// Intentions are to get the functions to exist together without flouting
-// One-Definition-Rule (ODR).
-struct kStandardCpp {};
-struct kNeon {};
+enum class Path { kStandardCpp = 0, kNeon = 1 };
 
 #if RUY_PLATFORM_NEON
-using kHighestPath = kNeon;
+constexpr Path kHighestPath = Path::kNeon;
 #else
-using kHighestPath = kStandardCpp;
+constexpr Path kHighestPath = Path::kStandardCpp;
 #endif
 
-template <class Path>
-struct Preprocess {
+template <enum Path>
+struct Preprocess;
+
+/*
+ * Naive implementation using standard C++ functions. Not optimized using SIMD operations.
+ */
+template <>
+struct Preprocess<Path::kStandardCpp> {
   static void quantize(const float *input, int8_t *output, float scale, Index rows, Index width) {
     const Index size = rows * width;
     for(size_t i = 0; i < size; i++) {
@@ -104,8 +117,13 @@ struct Preprocess {
 };
 
 #if RUY_PLATFORM_NEON
+
+/*
+ * Optimized path using ARM NEON SIMD intrinsics. Currently only supports int8_t.
+ * TODO: Expand support to 16-bit.
+ */
 template <>
-struct Preprocess<kNeon> {
+struct Preprocess<Path::kNeon> {
   static void quantize(const float *input, int8_t *output, float scale, Index rows, Index width) {
     const float32x4_t *Input = reinterpret_cast<const float32x4_t *>(input);
     const float32x4_t *InputEnd = reinterpret_cast<const float32x4_t *>(input + rows * width);
@@ -308,12 +326,20 @@ struct Preprocess<kNeon> {
     }
   }
 };
+
 #endif
 }  // namespace detail
 
+/*
+ * The following nomenclature comes from intgemm. The current state of code is to keep the
+ * intgemm_interface.h diff minimal. There are possibly better abstractions.
+ */
 struct IntgemmViaRuy {
   using Index = std::uint32_t;
 
+  // Convert compile time errors into run-time ABORTS. This allows bringing in only int8_t and
+  // select functions that are required to create a path which will run while not achieving parity
+  // with intgemm.
   template <class T>
   struct IntBase {
     using Type = T;
@@ -350,13 +376,13 @@ struct IntgemmViaRuy {
     }
   };
 
+  // Intgemm nomenclature expects Int8. Missing functions are ABORTs.
   struct Int8 : IntBase<int8_t> {
     using Type = int8_t;
     static void PrepareBQuantizedTransposed(const Type *input,
                                             Type *output,
                                             Index rows,
                                             Index cols) {
-      LOG(info, "Calling PrepareBQuantizedTransposed");
       std::memcpy(output, input, /*count=*/sizeof(Type) * (rows * cols));
     }
 
@@ -365,7 +391,6 @@ struct IntgemmViaRuy {
                                    float quant_mult,
                                    Index rows,
                                    Index cols) {
-      LOG(info, "Calling PrepareBTransposed with quant_mult = {}", quant_mult);
       detail::Preprocess<detail::kHighestPath>::quantize(input, output, quant_mult, rows, cols);
     }
 
@@ -374,7 +399,6 @@ struct IntgemmViaRuy {
                          float quant_mult,
                          Index rows,
                          Index cols) {
-      LOG(info, "Calling PrepareA quant_mult = {}", quant_mult);
       detail::Preprocess<detail::kHighestPath>::quantize(input, output, quant_mult, rows, cols);
     }
 
@@ -383,7 +407,6 @@ struct IntgemmViaRuy {
                                Index width,
                                const Index *cols,
                                const Index *cols_end) {
-      LOG(info, "Calling SelectColumnsB");
       // B_prepared is expected to be col-major, for our implementation via ruy. If
       // col-major we can memcpy the respective column entries as they're
       // sequential. There are width=rows entries.
@@ -393,6 +416,10 @@ struct IntgemmViaRuy {
       }
     }
 
+    // We don't have callback an no-op capability here yet. Multiply is kept similar to Mozilla
+    // specification and there are overloads with and without bias to avoid an if inside. This
+    // method corresponds to the one with bias.
+    // output = A*B + bias
     static void Multiply(const Type *input_A_prepared,
                          const Type *input_B_prepared,
                          const float *bias_prepared,
@@ -401,7 +428,6 @@ struct IntgemmViaRuy {
                          Index width,
                          Index cols_B,
                          float unquant_multiplier) {
-      LOG(info, "Calling Multiply A*B + bias");
       // It is expected that somehow we have managed to call all prepare by the time
       // we are here, with inputs (prepared) in int8_t. All that's left to do is use
       // ruy for multiply and then start with the reverse ops to get to fp32.
@@ -441,6 +467,7 @@ struct IntgemmViaRuy {
           dest_ptr, bias_prepared, unquant_multiplier, rows_A, cols_B, output);
     }
 
+    // output = A*B (notice no bias).
     static void Multiply(const Type *input_A_prepared,
                          const Type *input_B_prepared,
                          float *output,
@@ -448,7 +475,6 @@ struct IntgemmViaRuy {
                          Index width,
                          Index cols_B,
                          float unquant_multiplier) {
-      LOG(info, "Calling Multiply A*B");
       // It is expected that somehow we have managed to call all prepare by the time
       // we are here, with inputs (prepared) in int8_t. All that's left to do is use
       // ruy for multiply and then start with the reverse ops to get to fp32.
@@ -489,6 +515,7 @@ struct IntgemmViaRuy {
     }
   };
 
+  // Int16 support is currently missing.
   struct Int16 : IntBase<int16_t> {
     using Type = int16_t;
   };
@@ -503,6 +530,7 @@ struct IntgemmViaRuy {
   }
 
   static void PrepareBias(const float *input, float *output, Index rows, Index cols) {
+    // TODO: Remove the if, call-sites should be fixed by now.
     if(input != nullptr) {
       std::memcpy(output, input, /*count=*/sizeof(float) * (1 * cols));
     } else {
