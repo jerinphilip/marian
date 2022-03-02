@@ -16,9 +16,10 @@
 #include <arm_neon.h>
 #endif
 
+namespace marian::cpu::integer {
+
 using Index = std::uint32_t;
 
-namespace detail {
 
 /*
  * An AlignedVector is similar to intgemm's aligned allocations. Defined here
@@ -328,7 +329,6 @@ struct Preprocess<Path::kNeon> {
 };
 
 #endif
-}  // namespace detail
 
 /*
  * The following nomenclature comes from intgemm. The current state of code is to keep the
@@ -391,7 +391,7 @@ struct IntgemmViaRuy {
                                    float quant_mult,
                                    Index rows,
                                    Index cols) {
-      detail::Preprocess<detail::kHighestPath>::quantize(input, output, quant_mult, rows, cols);
+      Preprocess<kHighestPath>::quantize(input, output, quant_mult, rows, cols);
     }
 
     static void PrepareA(const float *input,
@@ -399,7 +399,7 @@ struct IntgemmViaRuy {
                          float quant_mult,
                          Index rows,
                          Index cols) {
-      detail::Preprocess<detail::kHighestPath>::quantize(input, output, quant_mult, rows, cols);
+      Preprocess<kHighestPath>::quantize(input, output, quant_mult, rows, cols);
     }
 
     static void SelectColumnsB(const Type *input,
@@ -452,7 +452,7 @@ struct IntgemmViaRuy {
       ruy::Matrix<std::int32_t> dst;
       ruy::MakeSimpleLayout(rows_A, cols_B, ruy::Order::kRowMajor, dst.mutable_layout());
 
-      detail::AlignedVector<std::int32_t> dst_data(rows_A * cols_B);
+      AlignedVector<std::int32_t> dst_data(rows_A * cols_B);
       std::int32_t *dest_ptr = dst_data.data();
 
       dst.set_data(dest_ptr);
@@ -463,7 +463,7 @@ struct IntgemmViaRuy {
 
       // Unquantizes, then adds bias in a single statement on the output.
       // float unquant_multiplier = (1.0f * scale_output) / (scale_A * scale_B);
-      detail::Preprocess<detail::kHighestPath>::unquantizeAddBias(
+      Preprocess<kHighestPath>::unquantizeAddBias(
           dest_ptr, bias_prepared, unquant_multiplier, rows_A, cols_B, output);
     }
 
@@ -499,7 +499,7 @@ struct IntgemmViaRuy {
       ruy::Matrix<std::int32_t> dst;
       ruy::MakeSimpleLayout(rows_A, cols_B, ruy::Order::kRowMajor, dst.mutable_layout());
 
-      detail::AlignedVector<std::int32_t> dst_data(rows_A * cols_B);
+      AlignedVector<std::int32_t> dst_data(rows_A * cols_B);
       std::int32_t *dest_ptr = dst_data.data();
 
       dst.set_data(dest_ptr);
@@ -510,7 +510,7 @@ struct IntgemmViaRuy {
 
       // Unquantizes, then adds bias in a single statement on the output.
       // float unquant_multiplier = (1.0f * scale_output) / (scale_A * scale_B);
-      detail::Preprocess<detail::kHighestPath>::unquantize(
+      Preprocess<kHighestPath>::unquantize(
           dest_ptr, unquant_multiplier, rows_A, cols_B, output);
     }
   };
@@ -538,3 +538,5 @@ struct IntgemmViaRuy {
     }
   }
 };
+
+}
