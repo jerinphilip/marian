@@ -406,7 +406,7 @@ public:
   #else
     const float *bias = nullptr;
     float *bias_prepared = val_->data();
-    IntgemmViaRuy::PrepareBias(nullptr, val_->data(), rows(b), cols(b));
+    IntgemmViaRuy::PrepareBias(bias, bias_prepared, rows(b), cols(b));
   #endif
     }};
 #else
