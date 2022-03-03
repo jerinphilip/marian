@@ -266,8 +266,8 @@ struct QuantMultNodeOp : public UnaryNodeOp {
 #pragma warning(push)
 #pragma warning(disable: 4127) //VSCODE thinks line 222 is constant conditional expression, which it is only after the template resolution, not before.
   NodeOps forwardOps() override {
-#ifdef COMPILE_CPU
-    return {NodeOp(
+    return  {[=](){
+    #ifdef COMPILE_CPU
       if (vtype == Type::int16) {
         *val_->data() = 1024.0f;
       } else if (child(0)->type() == "intgemmSelectColumnsB") {
@@ -290,10 +290,8 @@ struct QuantMultNodeOp : public UnaryNodeOp {
         *val_->data() = 127.0f / IntgemmViaRuy::MaxAbsolute(child(0)->val()->data(), child(0)->val()->data() + child(0)->val()->shape().elements());
         #endif
       }
-    )};
-#else
-    return {NodeOp()};
-#endif
+    #endif // COMPILE_CPU
+    }};
   }
 #pragma warning(pop)
   NodeOps backwardOps() override {
