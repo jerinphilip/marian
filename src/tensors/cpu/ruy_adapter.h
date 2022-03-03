@@ -67,7 +67,7 @@ template <>
 struct Preprocess<Path::kStandardCpp> {
   static void quantize(const float *input, int8_t *output, float scale, Index rows, Index width) {
     const Index size = rows * width;
-    for(size_t i = 0; i < size; i++) {
+    for(Index i = 0; i < size; i++) {
       // Round to nearest after multiplying with scale.
       float value = roundf(scale * input[i]);
 
@@ -83,8 +83,8 @@ struct Preprocess<Path::kStandardCpp> {
 
   template <class Scalar>
   static void transpose(const Scalar *input, Index rows, Index cols, Scalar *output) {
-    for(size_t i = 0; i < rows; i++) {
-      for(size_t j = 0; j < cols; j++) {
+    for(Index i = 0; i < rows; i++) {
+      for(Index j = 0; j < cols; j++) {
         output[j * rows + i] = input[i * cols + j];
       }
     }
@@ -96,8 +96,8 @@ struct Preprocess<Path::kStandardCpp> {
                                 Index rows_A,
                                 Index cols_B,
                                 float *output) {
-    for(size_t i = 0; i < rows_A; i++) {
-      for(size_t j = 0; j < cols_B; j++) {
+    for(Index i = 0; i < rows_A; i++) {
+      for(Index j = 0; j < cols_B; j++) {
         Index idx = i * cols_B + j;
         output[idx] = (input[idx] * unquant_multiplier) + input_bias_prepared[j];
       }
@@ -109,8 +109,8 @@ struct Preprocess<Path::kStandardCpp> {
                          Index rows_A,
                          Index cols_B,
                          float *output) {
-    for(size_t i = 0; i < rows_A; i++) {
-      for(size_t j = 0; j < cols_B; j++) {
+    for(Index i = 0; i < rows_A; i++) {
+      for(Index j = 0; j < cols_B; j++) {
         Index idx = i * cols_B + j;
         output[idx] = (input[idx] * unquant_multiplier);
       }
@@ -182,11 +182,11 @@ struct Preprocess<Path::kNeon> {
 
   // Specialization for int8_t
   static void transpose(const int8_t *input, Index rows, Index cols, int8_t *output) {
-    constexpr size_t tile_size = 16;
+    constexpr Index tile_size = 16;
     // TODO(jerin): Enable
     // assert(rows % tile_size == 0 && cols & tile_size == 0);
-    for(size_t i = 0; i < rows; i += tile_size) {
-      for(size_t j = 0; j < cols; j += tile_size) {
+    for(Index i = 0; i < rows; i += tile_size) {
+      for(Index j = 0; j < cols; j += tile_size) {
         _transpose_16x16(input, i, j, rows, cols, output);
       }
     }
