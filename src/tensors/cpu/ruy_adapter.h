@@ -20,7 +20,7 @@ namespace marian {
 namespace cpu {
 namespace integer {
 
-using Index = std::uint32_t;
+using Index = std::uint64_t;
 
 /*
  * An AlignedVector is similar to intgemm's aligned allocations. Defined here
@@ -336,8 +336,6 @@ struct Preprocess<Path::kNeon> {
  * intgemm_interface.h diff minimal. There are possibly better abstractions.
  */
 struct IntgemmViaRuy {
-  using Index = std::uint32_t;
-
   // Convert compile time errors into run-time ABORTS. This allows bringing in only int8_t and
   // select functions that are required to create a path which will run while not achieving parity
   // with intgemm.
