@@ -409,7 +409,7 @@ struct IntgemmViaRuy {
       // B_prepared is expected to be col-major, for our implementation via ruy. If
       // col-major we can memcpy the respective column entries as they're
       // sequential. There are width=rows entries.
-      Index num_cols = std::distance(cols, cols_end);
+      Index num_cols = static_cast<Index>(std::distance(cols, cols_end));
       for(Index c = 0; c < num_cols; ++c) {
         std::memcpy(&(output[c * width]), &(input[cols[c] * width]), width);
       }
