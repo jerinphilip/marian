@@ -170,6 +170,7 @@ if(MSVC)
   # set(INTRINSICS "/arch:AVX")
   add_definitions(-DUSE_SSE2=1)
 
+
   # Or maybe use these?
   set(INTRINSICS ${MSVC_BUILD_ARCH})
   # set(INTRINSICS "/arch:AVX512")
@@ -196,6 +197,16 @@ if(MSVC)
     set(EXT_LIBS ${EXT_LIBS} fbgemm)
     add_definitions(-DUSE_FBGEMM=1 -DFBGEMM_STATIC=1)
   endif(USE_FBGEMM)
+
+  if(USE_INTGEMM)
+    add_definitions(-DUSE_INTGEMM=1)
+  endif(USE_INTGEMM)
+
+  if(USE_SIMDE)
+    add_definitions(-DUSE_SIMDE=1)
+    add_definitions(-DSIMDE_ENABLE_NATIVE_ALIASES=1)
+  endif(USE_SIMDE)
+
 else(MSVC)
 
   # Check we are using at least g++ 5.0
