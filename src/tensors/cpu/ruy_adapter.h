@@ -524,12 +524,8 @@ struct IntgemmViaRuy {
   }
 
   static void PrepareBias(const float *input, float *output, Index rows, Index cols) {
-    // TODO: Remove the if, call-sites should be fixed by now.
-    if(input != nullptr) {
-      std::memcpy(output, input, /*count=*/sizeof(float) * (1 * cols));
-    } else {
-      std::fill(output, output + cols, 0);
-    }
+    assert(input != nullptr && output != nullptr);
+    std::memcpy(output, input, /*count=*/sizeof(float) * (1 * cols));
   }
 };
 
