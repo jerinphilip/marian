@@ -60,7 +60,6 @@ bool shifted_;
   #else 
   // Copied from above. No shifted in ARM.
     typedef typename intgemm_<vtype>::type Integer;
-    LOG(info, "PrepareA supplied quantMult_ = {}", quantMult_);
     intgemm_<vtype>::width::PrepareA(child(0)->val()->data(), /*input*/
                                       val_->data<Integer>(), /*output*/
                                       *child(1)->val()->data(), /*Quant Mult*/
@@ -128,7 +127,6 @@ bool transposed_; /*This is only used for the output layer which has a different
                                val_->data<int8_t>()); /*output*/
         }
 #else
-        LOG(info, "PrepareBTransposed quantMult {}", *child(1)->val()->data());
         if (!transposed_) {
           typedef typename intgemm_<vtype>::type Integer;
           intgemm_<vtype>::width::PrepareB(child(0)->val()->data(), /*input*/
