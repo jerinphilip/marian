@@ -20,7 +20,7 @@ namespace marian {
 namespace cpu {
 namespace integer {
 
-using Index = std::uint64_t;
+using Index = unsigned int;
 
 /*
  * An AlignedVector is similar to intgemm's aligned allocations. Defined here
