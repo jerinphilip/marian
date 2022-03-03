@@ -132,6 +132,17 @@ const float *fvecs_maybe_subsample(
   return x_subset;
 }
 
+float fvec_norm_L2sqr_ref(const float *x, size_t d)
+{
+    size_t i;
+    double res = 0;
+    for (i = 0; i < d; i++)
+       res += x[i] * x[i];
+    return res;
+}
+
+
+
 #ifdef __SSE__
 // reads 0 <= d < 4 floats as __m128
 static inline __m128 masked_read(int d, const float *x)
@@ -178,14 +189,7 @@ float fvec_norm_L2sqr(const float *  x,
 // scalar implementation
 float fvec_norm_L2sqr(const float *x, size_t d)
 {
-  // Let's hope this never gets called. @jerinphilip is guessing function by name.
-  std::abort();
-  float sum = 0;
-  for(size_t i  = 0; i < d; i++){
-      sum += (*x)*(*x);
-      ++x;
-  }
-  return sqrt(sum / d);
+  return fvec_norm_L2sqr_ref(x, d);
 }
 #endif
 
