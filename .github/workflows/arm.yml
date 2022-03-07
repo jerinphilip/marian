@@ -22,7 +22,7 @@ env:
 
 jobs:
   ubuntu:
-    name: ARM Ubuntu Latest via Android NDK
+    name: "arm-v8a cross-compile via Android NDK"
     runs-on: ubuntu-latest
 
     steps:
