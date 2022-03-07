@@ -93,6 +93,7 @@ jobs:
             -DBUILD_ARCH=armv8-a
             -DUSE_INTGEMM=off
             -DUSE_SIMDE=on
+            -DUSE_RUY=on
         )
         cmake \
             -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake \
