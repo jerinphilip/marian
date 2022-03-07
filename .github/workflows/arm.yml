@@ -105,8 +105,7 @@ jobs:
       working-directory: build
       run: |-
           # Only build marian (lib) for now.
-          # TODO(jerin): Fix protobuf
-          make -j2 marian
+          make -j2 
 
     - name: ccache epilog
       run: 'ccache -s # Print current cache stats'
