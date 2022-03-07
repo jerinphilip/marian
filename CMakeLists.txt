@@ -70,10 +70,6 @@ else(COMPILE_WASM)
     set("BUILD_WIDTH" "")
 endif()
 
-if(ANDROID)
-    set(EXT_LIBS ${EXT_LIBS} android log)
-endif(ANDROID)
-
 if(NOT COMPILE_WASM)
   # Setting BUILD_ARCH to native invokes CPU intrinsic detection logic below.
   # Prevent invoking that logic for WASM builds.
