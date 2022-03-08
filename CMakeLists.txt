@@ -42,20 +42,20 @@ option(COMPILE_WASM "Compile (wasm compatible) marian for WASM target" OFF)
 option(USE_WASM_COMPATIBLE_SOURCE "Enable the minimal marian sources that compile to wasm. Useful for debugging wasm failures by building same sources natively" OFF)
 
 option(USE_SIMDE "Enable simde to target instruction sets" OFF)
+option(USE_ONNX_SGEMM "Compile with wasm compatible blas" OFF)
+option(COMPILE_WITHOUT_EXCEPTIONS "Compile without exceptions" OFF)
 
 # cmake options that are dependent on USE_WASM_COMPATIBLE_SOURCE cmake option
 CMAKE_DEPENDENT_OPTION(USE_THREADS "Compile with multi-threading support" OFF
                        "USE_WASM_COMPATIBLE_SOURCE" ON)
-CMAKE_DEPENDENT_OPTION(USE_WASM_COMPATIBLE_BLAS "Compile with wasm compatible blas" ON
-                       "USE_WASM_COMPATIBLE_SOURCE" OFF)
-CMAKE_DEPENDENT_OPTION(COMPILE_WITHOUT_EXCEPTIONS "Compile without exceptions" ON
-                       "USE_WASM_COMPATIBLE_SOURCE" OFF)
 
 if (USE_WASM_COMPATIBLE_SOURCE)
   set(SPM_BUILD_LIBRARY_ONLY ON CACHE BOOL "Build only sentencepiece library (skip building executables)")
   add_compile_definitions(WASM_COMPATIBLE_SOURCE)
   # Setting USE_SSE2 definition to enable SSE2 specific code in "3rd_party/sse_mathfun.h" for wasm builds
   add_compile_definitions(USE_SSE2)
+  set(USE_ONNX_SGEMM ON CACHE BOOL "")
+  set(COMPILE_WITHOUT_EXCEPTIONS ON CACHE BOOL "")
 endif()
 
 if (COMPILE_WASM)
@@ -577,7 +577,7 @@ if(COMPILE_CPU)
   add_definitions(-DCOMPILE_CPU=1)        # Move the compile CPU definition on top since we want to compile intgemm when we set compile CPU
                                           # in case a BLAS vendor is not found, we have a runtime error, although we should probably not allow the compilation to go on
                                           # if there are BLAS vendors, we have other runtime checks with sane error messages.
-  if(USE_WASM_COMPATIBLE_BLAS)
+  if(USE_ONNX_SGEMM)
     ## Use a wasm compatible BLAS
     set(EXT_LIBS ${EXT_LIBS} onnx-sgemm)
     set(BLAS_FOUND TRUE)
@@ -590,7 +590,7 @@ if(COMPILE_CPU)
     include_directories("/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Accelerate.framework/Frameworks/vecLib.framework/Headers")
     set(EXT_LIBS ${EXT_LIBS} "-framework Accelerate")
     add_definitions(-DBLAS_FOUND=1)
-  else(USE_WASM_COMPATIBLE_BLAS)
+  else(USE_ONNX_SGEMM)
     if(USE_MKL)
       find_package(MKL)
     endif(USE_MKL)
@@ -611,7 +611,7 @@ if(COMPILE_CPU)
         endif(CBLAS_FOUND)
       endif(BLAS_FOUND)
     endif(MKL_FOUND)
-  endif(USE_WASM_COMPATIBLE_BLAS)
+  endif(USE_ONNX_SGEMM)
 endif(COMPILE_CPU)
 
 ###############################################################################
