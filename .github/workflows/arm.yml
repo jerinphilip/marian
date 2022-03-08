@@ -97,7 +97,8 @@ jobs:
             -DUSE_ONNX_SGEMM=on # For time being.
             -DCOMPILE_WITHOUT_EXCEPTIONS=on # Apparently this can reduce the binary size, let's see.
         )
-        cmake \
+        # Additionally list variables finally configured.
+        cmake -L \
             -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake \
             -DANDROID_TOOLCHAIN=clang \
             -DANDROID_ABI=$ABI \
@@ -109,8 +110,6 @@ jobs:
             "${OTHER_ANDROID_ARGS[@]}" "${OTHER_MARIAN_ARGS[@]}" \
             ..
 
-        # List variables finally configured.
-        cmake -L
 
     - name : Build marian for android
       working-directory: build
