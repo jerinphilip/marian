@@ -114,3 +114,30 @@ jobs:
 
     - name: ccache epilog
       run: 'ccache -s # Print current cache stats'
+
+    - uses: actions/upload-artifact@v2
+      with:
+        path: ${{github.workspace}}/build/marian-decoder
+
+
+  release:
+    name: Release Latest Build
+    runs-on: ubuntu-latest
+    needs: [ubuntu]
+    if: github.ref == 'refs/heads/arm-bmt'
+    steps:
+     - name: Download artifacts
+       uses: actions/download-artifact@v2
+      
+     - name: Update GitHub prerelease
+       uses: marvinpinto/action-automatic-releases@latest
+       with:
+         repo_token: ${{ secrets.GITHUB_TOKEN }}
+         automatic_release_tag: latest
+         prerelease: true
+         title: "Latest Build"
+         files: |
+	   artifact/marian-decoder
+
+
+
