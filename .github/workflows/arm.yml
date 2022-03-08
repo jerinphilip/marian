@@ -94,6 +94,7 @@ jobs:
             -DUSE_INTGEMM=off
             -DUSE_SIMDE=on
             -DUSE_RUY=on
+            -DUSE_WASM_COMPATIBLE_BLAS=on # For time being.
         )
         cmake \
             -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake \
