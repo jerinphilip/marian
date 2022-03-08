@@ -95,6 +95,7 @@ jobs:
             -DUSE_SIMDE=on
             -DUSE_RUY=on
             -DUSE_WASM_COMPATIBLE_BLAS=on # For time being.
+            -DCOMPILE_WITHOUT_EXCEPTIONS=on # Apparently this can reduce the binary size, let's see.
         )
         cmake \
             -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake \
