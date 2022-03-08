@@ -31,9 +31,9 @@ if(USE_SIMDE)
   include_directories(./simde-no-tests)
 endif(USE_SIMDE)
 
-if(USE_WASM_COMPATIBLE_BLAS)
+if(USE_ONNX_SGEMM)
   add_subdirectory(./onnxjs)
-endif(USE_WASM_COMPATIBLE_BLAS)
+endif(USE_ONNX_SGEMM)
 
 if(USE_FBGEMM)
   # @TODO: find out if this is somehow harmful. This is supppressing CMake warnings for CMAKE_SUPPRESS_DEVELOPER_WARNINGS
