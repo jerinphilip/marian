@@ -137,7 +137,4 @@ jobs:
          prerelease: true
          title: "Latest Build"
          files: |
-	   artifact/marian-decoder
-
-
-
+           artifact/marian-decoder
