@@ -99,6 +99,7 @@ jobs:
         )
         # Additionally list variables finally configured.
         cmake -L \
+            -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake \
             -DANDROID_TOOLCHAIN=clang \
             -DANDROID_ABI=$ABI \
