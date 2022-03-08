@@ -579,11 +579,12 @@ if(COMPILE_CPU)
                                           # if there are BLAS vendors, we have other runtime checks with sane error messages.
   if(USE_ONNX_SGEMM)
     ## Use a wasm compatible BLAS
+    ## ^ SGEMM != BLAS
     set(EXT_LIBS ${EXT_LIBS} onnx-sgemm)
-    set(BLAS_FOUND TRUE)
-    set(BLAS_VENDOR "ONNX-SGEMM")
-    add_definitions(-DBLAS_FOUND=1  -DWASM_COMPATIBLE_BLAS=1) # Might be required in some cmake files further down the line, let's avoid using add_compile_definitions in this codeblock
-  elseif(APPLE AND USE_APPLE_ACCELERATE)
+    add_definitions(-DUSE_ONNX_SGEMM=1) # Might be required in some cmake files further down the line, let's avoid using add_compile_definitions in this codeblock
+  endif(USE_ONNX_SGEMM)
+
+  if(APPLE AND USE_APPLE_ACCELERATE)
     set(BLAS_VENDOR "Accelerate")
     # see https://developer.apple.com/documentation/accelerate for more info
     # you may need to install Xcode command line tools if you don't have them already (https://developer.apple.com/xcode/features/)
