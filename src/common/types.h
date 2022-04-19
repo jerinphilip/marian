@@ -22,6 +22,10 @@
 #include <immintrin.h>
 #endif
 
+#if defined(__ARM_NEON) || defined(__ARM_NEON__)
+#include <arm_neon.h>
+#endif
+
 #endif
 
 #ifdef __CUDACC__ // nvcc is compiling this code
@@ -165,7 +169,7 @@ struct intgemm8 {
 
 #ifndef __CUDACC__ // vectorized types not available from .cu files
 
-// @TODO: check what intrinsics are actually available.
+#ifdef __SSE__
 struct float32x4 {
 private:
   __m128 f_;
@@ -191,6 +195,36 @@ public:
     return out;
   }
 };
+#endif
+
+#if defined(__ARM_NEON) || defined(__ARM_NEON__)
+struct float32x4 {
+private:
+   using __m128 = float32x4_t;
+  __m128 f_;
+
+public:
+  float32x4() {}
+  float32x4(const __m128& f) : f_(f) {}
+  float32x4(const float& f) : f_(vdupq_n_f32(f)) {} // __m128 _mm_set1_ps(float) copies value into all slots
+
+  operator const __m128&() const { return f_; }
+  operator __m128&() { return f_; }
+
+  float operator[] (size_t i) const {
+    return *(((float*)&f_) + i); // potentially undefined, but efficient. In practice __m128 is an array of floats
+  }
+
+  friend std::ostream& operator<<(std::ostream& out, float32x4 f4) {
+    float* a = (float*)&f4;
+    out << "[" << a[0];
+    for(int i = 1; i < 4; i++)
+      out << " " << a[i];
+    out << "]";
+    return out;
+  }
+};
+#endif
 
 // @TODO: consider how code can be shared via templating
 #ifdef __AVX__
