@@ -18,10 +18,8 @@
 
 #ifndef __CUDACC__ // NVCC is very unreliable when it comes to CPU intrinsics, we hide them completely from NVCC-compiled code
 
-#ifndef USE_SIMDE
+#ifdef __AVX__
 #include <immintrin.h>
-#else
-#include "x86/avx2.h"
 #endif
 
 #endif
