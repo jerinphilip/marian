@@ -5,7 +5,7 @@
 #include <immintrin.h>
 #include <tmmintrin.h>
 #include <xmmintrin.h>
-#elif defined(__ARM_NEON) || defined(__ARM_NEON__)
+#elif defined(__ARM_NEON) || defined(__ARM_NEON)
 #include <arm_neon.h>
 #endif
 
@@ -42,7 +42,7 @@ void AddBias(marian::Tensor C, const marian::Tensor Bias) {
       __m128 yi = _mm_add_ps(ai, bi);
       _mm_storeu_ps(y + j * n + i, yi);
     }
-#elif defined(__ARM_NEON) || defined(__ARM_NEON__)
+#elif defined(__ARM_NEON) || defined(__ARM_NEON)
     int n4 = (n / 4) * 4;
     using __m128 = float32x4_t;
     for(; i < n4; i += 4) {
@@ -54,8 +54,8 @@ void AddBias(marian::Tensor C, const marian::Tensor Bias) {
 
 #else
     // StandardCPP No SIMD case.
-    for(i = 0; i < n; i++) {
-      y[j * n + i] = x[j * n + i] + bias[i];
+    for(i = 0;  i < n; i++) {
+        y[j * n + i] = x[j * n + i] + bias[i];
     }
 #endif
     for(; i < n; i++) {
@@ -64,6 +64,6 @@ void AddBias(marian::Tensor C, const marian::Tensor Bias) {
   }
 }
 
-}  // namespace integer
-}  // namespace cpu
-}  // namespace marian
+} //integer
+} //cpu
+} //marian
