@@ -217,6 +217,7 @@ struct Ops<double> {
 #include "3rd_party/sse_mathfun.h"
 #else
 #include "3rd_party/simd_utils/simd_utils.h"
+#include "3rd_party/simd_utils/neon_mathfun.h"
 #endif
 
 

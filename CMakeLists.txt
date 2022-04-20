@@ -55,8 +55,8 @@ if (USE_WASM_COMPATIBLE_SOURCE)
   add_compile_definitions(WASM_COMPATIBLE_SOURCE)
   # Setting USE_SSE2 definition to enable SSE2 specific code in "3rd_party/sse_mathfun.h" for wasm builds
   add_compile_definitions(USE_SSE2)
-  set(USE_ONNX_SGEMM ON CACHE BOOL "")
-  set(COMPILE_WITHOUT_EXCEPTIONS ON CACHE BOOL "")
+  set(USE_ONNX_SGEMM ON CACHE BOOL "Use ONNX SGEMM (for WebAssembly)")
+  set(COMPILE_WITHOUT_EXCEPTIONS ON CACHE BOOL "Compile without Exceptions")
 endif()
 
 if (COMPILE_WASM)
@@ -279,6 +279,7 @@ else(MSVC)
   endif(USE_INTGEMM)
 
   if(USE_SIMDE)
+    add_definitions(-DARM -DSSE) #added for ARM
     add_definitions(-DUSE_SIMDE=1)
     add_definitions(-DSIMDE_ENABLE_NATIVE_ALIASES=1)
   endif(USE_SIMDE)
