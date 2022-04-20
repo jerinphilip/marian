@@ -20,6 +20,8 @@
 
 #ifdef __AVX__
 #include <immintrin.h>
+#elif __SSE__
+#include <xmmintrin.h>
 #endif
 
 #if defined(__ARM_NEON) || defined(__ARM_NEON__)
