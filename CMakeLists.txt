@@ -41,7 +41,7 @@ option(GENERATE_MARIAN_INSTALL_TARGETS "Generate Marian install targets (require
 option(COMPILE_WASM "Compile (wasm compatible) marian for WASM target" OFF)
 option(USE_WASM_COMPATIBLE_SOURCE "Enable the minimal marian sources that compile to wasm. Useful for debugging wasm failures by building same sources natively" OFF)
 
-option(USE_SIMDE "Enable simde to target instruction sets" OFF)
+option(USE_SIMD_UTILS "Enable simde to target instruction sets" OFF)
 option(USE_ONNX_SGEMM "Compile with wasm compatible blas" OFF)
 option(USE_RUY_SGEMM "Compile with Ruy SGEMM" OFF)
 option(COMPILE_WITHOUT_EXCEPTIONS "Compile without exceptions" OFF)
@@ -203,11 +203,6 @@ if(MSVC)
     add_definitions(-DUSE_INTGEMM=1)
   endif(USE_INTGEMM)
 
-  if(USE_SIMDE)
-    add_definitions(-DUSE_SIMDE=1)
-    add_definitions(-DSIMDE_ENABLE_NATIVE_ALIASES=1)
-  endif(USE_SIMDE)
-
 else(MSVC)
 
   # Check we are using at least g++ 5.0
@@ -278,11 +273,9 @@ else(MSVC)
     add_definitions(-DUSE_INTGEMM=1)
   endif(USE_INTGEMM)
 
-  if(USE_SIMDE)
-    add_definitions(-DARM -DSSE) #added for ARM
-    add_definitions(-DUSE_SIMDE=1)
-    add_definitions(-DSIMDE_ENABLE_NATIVE_ALIASES=1)
-  endif(USE_SIMDE)
+  if(USE_SIMD_UTILS)
+    add_definitions(-DARM -DSSE -flax-vector-conversions) #added for ARM
+  endif(USE_SIMD_UTILS)
 
   if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 9.0)
     # Clang-10.0.0 complains when CUDA is newer than 10.1
