@@ -213,11 +213,11 @@ struct Ops<double> {
 // __CUDA_ARCH__ is defined when compiling device (GPU) code
 #ifndef __CUDACC__
 
-#ifdef __SSE__
-#include "3rd_party/sse_mathfun.h"
-#elif defined(__ARM_NEON) || defined(__ARM_NEON__)
+#if defined(__ARM_NEON) || defined(__ARM_NEON__)
 #include "3rd_party/simd_utils/simd_utils.h"
 #include "3rd_party/simd_utils/neon_mathfun.h"
+#else
+#include "3rd_party/sse_mathfun.h"
 #endif
 
 
