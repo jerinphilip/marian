@@ -215,7 +215,7 @@ struct Ops<double> {
 
 #ifdef __SSE__
 #include "3rd_party/sse_mathfun.h"
-#else
+#elif defined(__ARM_NEON) || defined(__ARM_NEON__)
 #include "3rd_party/simd_utils/simd_utils.h"
 #include "3rd_party/simd_utils/neon_mathfun.h"
 #endif
