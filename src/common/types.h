@@ -201,7 +201,7 @@ public:
 };
 
 #else 
-
+// @TODO: check what intrinsics are actually available.
 struct float32x4 {
 private:
   __m128 f_;
