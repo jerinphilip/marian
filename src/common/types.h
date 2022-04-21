@@ -197,9 +197,9 @@ public:
     return out;
   }
 };
-#endif
 
-#if defined(__ARM_NEON) || defined(__ARM_NEON__)
+#elif defined(__ARM_NEON) || defined(__ARM_NEON__)
+
 struct float32x4 {
 private:
    using __m128 = float32x4_t;
@@ -225,6 +225,9 @@ public:
     out << "]";
     return out;
   }
+};
+#else 
+struct float32x4 {
 };
 #endif
 
