@@ -64,7 +64,6 @@ option(COMPILE_WITHOUT_EXCEPTIONS "Compile without exceptions" OFF)
 CMAKE_DEPENDENT_OPTION(USE_THREADS "Compile with multi-threading support" OFF
                        "USE_WASM_COMPATIBLE_SOURCE" ON)
 
-message(${CMAKE_TARGET_ARCHITECTURE_CODE})
 if(${CMAKE_TARGET_ARCHITECTURE_CODE} MATCHES "arm")
   set(USE_RUY ON)
   set(USE_RUY_SGEMM ON)
