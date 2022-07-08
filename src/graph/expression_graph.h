@@ -114,6 +114,7 @@ public:
   void clear() {
     tensors_->clear();
     shortterm_->clear();
+    cache_->clear();
   }
 
   void clearShorttermMemory() { shortterm_->clear(); }
