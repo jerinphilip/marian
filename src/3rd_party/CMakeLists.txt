@@ -10,8 +10,14 @@ if(NOT USE_WASM_COMPATIBLE_SOURCE)
 endif()
 add_subdirectory(./pathie-cpp)
 
-set(INTGEMM_DONT_BUILD_TESTS ON CACHE BOOL "Disable intgemm tests")
-add_subdirectory(./intgemm)
+if(${CMAKE_ANDROID_ARCH_ABI} MATCHES "arm")
+    # Do not include intgemm
+  add_subdirectory(./ruy)
+else()
+  message("CMAKE_SYSTEM_PROCESSOR" ${CMAKE_SYSTEM_PROCESSOR})
+  set(INTGEMM_DONT_BUILD_TESTS ON CACHE BOOL "Disable intgemm tests")
+  add_subdirectory(./intgemm)
+endif()
 
 if(USE_WASM_COMPATIBLE_BLAS)
   add_subdirectory(./onnxjs)

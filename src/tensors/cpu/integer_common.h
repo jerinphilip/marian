@@ -4,15 +4,19 @@
 #include "tensors/tensor_operators.h"
 #include "tensors/cpu/aligned.h"
 #include "common/io_item.h"
-#include "3rd_party/intgemm/intgemm/intgemm.h"
 #if defined(WASM)
 #include "wasm_intgemm_interface.h"
 #endif
 
+#ifdef __i386__
+#include "3rd_party/intgemm/intgemm/intgemm.h"
 #include <emmintrin.h>
 #include <immintrin.h>
 #include <tmmintrin.h>
 #include <xmmintrin.h>
+#else 
+#include "ruy_intgemm_impostor.h"
+#endif
 #include <cassert>
 #include <cstddef>
 

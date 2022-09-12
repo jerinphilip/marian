@@ -17,7 +17,9 @@
 #include <type_traits>
 
 #ifndef __CUDACC__ // NVCC is very unreliable when it comes to CPU intrinsics, we hide them completely from NVCC-compiled code
+#ifdef __i386__
 #include <immintrin.h>
+#endif // __i386__
 #endif
 
 #ifdef __CUDACC__ // nvcc is compiling this code
@@ -160,6 +162,7 @@ struct intgemm8 {
 
 
 #ifndef __CUDACC__ // vectorized types not available from .cu files
+#ifdef __i386__
 
 // @TODO: check what intrinsics are actually available.
 struct float32x4 {
@@ -215,12 +218,13 @@ public:
     return out;
   }
 };
-#else
+#else // __AVX__
 //Dummy version to get things to compile on older CPUs
 struct float32x8 {
 };
-#endif
-#endif
+#endif // __AVX__
+#endif // __i386__
+#endif // __CUDACC__
 
 // Internal to types.h, don't use. Use test functions below.
 enum class TypeClass : size_t {

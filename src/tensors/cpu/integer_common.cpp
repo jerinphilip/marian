@@ -4,6 +4,7 @@ namespace marian {
 namespace cpu {
 namespace integer {
 // This operates on floats after processing so doesn't care about int8_t vs int16_t.
+#ifdef __i386__
 void AddBias(marian::Tensor C, const marian::Tensor Bias) {
   float* y = C->data();
   const float* x = C->data();
@@ -36,6 +37,12 @@ void AddBias(marian::Tensor C, const marian::Tensor Bias) {
     }
   }
 }
+#else 
+void AddBias(marian::Tensor C, const marian::Tensor Bias){
+    //FIXME
+}
+#endif
+
 
 } //integer
 } //cpu

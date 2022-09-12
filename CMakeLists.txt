@@ -249,7 +249,7 @@ else(MSVC)
     # -msse4.1 once marian can solely be compiled with intgemm ("onnxjs" will be removed in that case)
     set(INTRINSICS "-mssse3 -msimd128")
   else()
-    set(INTRINSICS "-msse4.1")
+      set(INTRINSICS "") # Don't assume intrinsics available if arch is not native. 
   endif()
 
   if(USE_FBGEMM)
@@ -544,7 +544,11 @@ endif(USE_MPI)
 ###############################################################################
 # Find BLAS library for CPU compilation
 if(COMPILE_CPU)
+if(${CMAKE_ANDROID_ARCH_ABI} MATCHES "arm")
+  set(EXT_LIBS ${EXT_LIBS} ruy)
+else()
   set(EXT_LIBS ${EXT_LIBS} intgemm)       # Move the intgemm bits on top since they compile with every single variant
+endif()
   add_definitions(-DCOMPILE_CPU=1)        # Move the compile CPU definition on top since we want to compile intgemm when we set compile CPU
                                           # in case a BLAS vendor is not found, we have a runtime error, although we should probably not allow the compilation to go on
                                           # if there are BLAS vendors, we have other runtime checks with sane error messages.

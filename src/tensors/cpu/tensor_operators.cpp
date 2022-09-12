@@ -289,6 +289,7 @@ void TransposeFirst3In4(Tensor out, Tensor in, const std::vector<int>& vAxis) {
 }
 #endif  // MKL_FOUND
 
+#ifdef __i386__
 inline void transpose4x4_SSE(const float* A,
                              float* B,
                              const int lda,
@@ -303,6 +304,14 @@ inline void transpose4x4_SSE(const float* A,
   _mm_store_ps(&B[2 * ldb], row3);
   _mm_store_ps(&B[3 * ldb], row4);
 }
+#else // __i386__
+inline void transpose4x4_SSE(const float* A,
+                             float* B,
+                             const int lda,
+                             const int ldb) {
+    // FIXME
+}
+#endif // __i386__
 
 // from
 // https://stackoverflow.com/questions/16737298/what-is-the-fastest-way-to-transpose-a-matrix-in-c
@@ -331,6 +340,7 @@ void Transpose10(Tensor out, const Tensor in) {
     }
   }
 }
+
 
 // @TODO: optimize this, currently it's quite horrible
 template <bool add>
@@ -439,11 +449,15 @@ void Softmax(Tensor out, Tensor in) {
     return;
   }
 #endif
+  /*
   if(out->shape()[-1] % 4 == 0) {
     Softmax<float32x4>(out, in);
   } else {
+  */
     Softmax<float>(out, in);
+    /*
   }
+  */
 }
 
 
@@ -495,11 +509,12 @@ void LogSoftmax(Tensor out, Tensor in) {
     return;
   }
 #endif
+  /*
   if(out->shape()[-1] % 4 == 0) {
     LogSoftmax<float32x4>(out, in);
-  } else {
+  } else { */
     LogSoftmax<float>(out, in);
-  }
+  /*}*/
 }
 
 // @TODO: Remove remaining underscores in CPU kernels
@@ -1391,14 +1406,16 @@ void LSTMCellForwardTyped(Tensor out_, const std::vector<Tensor>& inputs) {
 
 void LSTMCellForward(Tensor out, std::vector<Tensor> inputs) {
   int cols = out->shape()[-1];
+  (void)cols;
 #ifdef __AVX__
   if(cols % 8 == 0)
     LSTMCellForwardTyped<float32x8>(out, inputs);
   else
 #endif
+      /*
   if(cols % 4 == 0)
     LSTMCellForwardTyped<float32x4>(out, inputs);
-  else
+  else */
     LSTMCellForwardTyped<float>(out, inputs);
 }
 
@@ -1434,15 +1451,16 @@ void LSTMOutputForwardTyped(Tensor out_, const std::vector<Tensor>& inputs) {
 
 void LSTMOutputForward(Tensor out, std::vector<Tensor> inputs) {
   int cols = out->shape()[-1];
-
+  (void)cols;
 #ifdef __AVX__
   if(cols % 8 == 0)
     LSTMOutputForwardTyped<float32x8>(out, inputs);
   else 
 #endif
+      /*
   if(cols % 4 == 0)
     LSTMOutputForwardTyped<float32x4>(out, inputs);
-  else
+  else */
     LSTMOutputForwardTyped<float>(out, inputs);
 }
 
