@@ -60,7 +60,7 @@ else()
   set(INTEL_ROOT_DEFAULT "/opt/intel")
 endif()
 set(INTEL_ROOT ${INTEL_ROOT_DEFAULT} CACHE PATH "Folder contains intel libs")
-message(STATUS "MKLROOT: ${MKL_ROOT}")
+message(STATUS "MKLROOT: $ENV{MKL_ROOT}")
 find_path(MKL_ROOT include/mkl.h PATHS $ENV{MKLROOT} ${INTEL_ROOT}/mkl
                                    DOC "Folder contains MKL")
 
