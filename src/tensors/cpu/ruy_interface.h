@@ -159,7 +159,6 @@ inline void _transpose_16x16(const int8_t *src,
 // Specialization for int8_t
 inline void transpose(const int8_t *input, Index rows, Index cols, int8_t *output) {
   constexpr Index tile_size = 16;
-  // TODO(jerin): Enable
   // assert(rows % tile_size == 0 && cols & tile_size == 0);
   for(Index i = 0; i < rows; i += tile_size) {
     for(Index j = 0; j < cols; j += tile_size) {
