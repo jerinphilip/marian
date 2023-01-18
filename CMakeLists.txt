@@ -16,9 +16,22 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(CMakeDependentOption)
 
+# Architecture detection
+include(TargetArch)
+
+target_architecture(CMAKE_TARGET_ARCHITECTURES)
+list(LENGTH CMAKE_TARGET_ARCHITECTURES cmake_target_arch_len)
+if(NOT "${cmake_target_arch_len}" STREQUAL "1")
+    set(CMAKE_TARGET_ARCHITECTURE_UNIVERSAL TRUE)
+    set(CMAKE_TARGET_ARCHITECTURE_CODE "universal")
+else()
+    set(CMAKE_TARGET_ARCHITECTURE_UNIVERSAL FALSE)
+    set(CMAKE_TARGET_ARCHITECTURE_CODE "${CMAKE_TARGET_ARCHITECTURES}")
+endif()
+
 # Custom CMake options
 option(COMPILE_CPU "Compile CPU version" ON)
-option(COMPILE_CUDA "Compile GPU version" ON)
+option(COMPILE_CUDA "Compile GPU version" OFF)
 option(COMPILE_EXAMPLES "Compile examples" OFF)
 option(COMPILE_SERVER "Compile marian-server" OFF)
 option(COMPILE_TESTS "Compile tests" OFF)
@@ -31,23 +44,64 @@ option(USE_CCACHE "Use ccache compiler cache (https://ccache.dev)" OFF)
 option(USE_CUDNN "Use CUDNN library" OFF)
 option(USE_DOXYGEN "Build documentation with Doxygen" ON)
 option(USE_FBGEMM "Use FBGEMM" OFF)
+option(USE_INTGEMM "Use INTGEMM" OFF)
 option(USE_MKL "Compile with MKL support" ON)
 option(USE_MPI "Use MPI library" OFF)
 option(USE_NCCL "Use NCCL library" ON)
 option(USE_SENTENCEPIECE "Download and compile SentencePiece" ON)
 option(USE_STATIC_LIBS "Link statically against non-system libs" OFF)
 option(GENERATE_MARIAN_INSTALL_TARGETS "Generate Marian install targets (requires CMake 3.12+)" OFF)
-option(M32_BINARIES "Generate 32bit binaries even when building outside of WASM. Useful for testing some WASM specific functionality without the need for the compiling to WASM." OFF)
 option(COMPILE_WASM "Compile (wasm compatible) marian for WASM target" OFF)
 option(USE_WASM_COMPATIBLE_SOURCE "Enable the minimal marian sources that compile to wasm. Useful for debugging wasm failures by building same sources natively" OFF)
+
+option(USE_SIMD_UTILS "Enable simde to target instruction sets" OFF)
+option(COMPILE_WITHOUT_EXCEPTIONS "Compile without exceptions" OFF)
 
 # cmake options that are dependent on USE_WASM_COMPATIBLE_SOURCE cmake option
 CMAKE_DEPENDENT_OPTION(USE_THREADS "Compile with multi-threading support" OFF
                        "USE_WASM_COMPATIBLE_SOURCE" ON)
-CMAKE_DEPENDENT_OPTION(USE_WASM_COMPATIBLE_BLAS "Compile with wasm compatible blas" ON
+CMAKE_DEPENDENT_OPTION(USE_ONNX_SGEMM "Compile with wasm compatible blas" ON
                        "USE_WASM_COMPATIBLE_SOURCE" OFF)
 CMAKE_DEPENDENT_OPTION(COMPILE_WITHOUT_EXCEPTIONS "Compile without exceptions" ON
                        "USE_WASM_COMPATIBLE_SOURCE" OFF)
+
+if(${CMAKE_TARGET_ARCHITECTURE_CODE} MATCHES "arm")
+  option(USE_RUY "Use Ruy" ON)
+
+  # Apple M1 has Apple Accelerate. Otherwise fallback to RUY
+  if(APPLE)
+    option(USE_RUY_SGEMM "Compile with Ruy SGEMM" OFF)
+  else(APPLE)
+    option(USE_RUY_SGEMM "Compile with Ruy SGEMM" ON)
+  endif(APPLE)
+
+  set(USE_SIMD_UTILS ON)
+
+  # Some warnings as errors. I don't feel comfortable about the strict aliasing.
+  set(ARM_WARNINGS "-fno-strict-aliasing -Wno-comment")
+
+  # Define that we are using ARM
+  add_compile_definitions(ARM)
+  #
+else()
+  set(USE_INTGEMM ON)
+endif()
+
+if(USE_INTGEMM)
+  add_compile_definitions(USE_INTGEMM=1)
+endif(USE_INTGEMM)
+
+if(USE_SIMD_UTILS)
+  if(${CMAKE_TARGET_ARCHITECTURE_CODE} MATCHES "arm")
+    add_compile_definitions(ARM FMA SSE) #added for ARM
+  endif()
+  if(MSVC)
+    add_compile_options(/flax-vector-conversions)
+  else(MSVC)
+    add_compile_options(-flax-vector-conversions)
+  endif(MSVC)
+endif(USE_SIMD_UTILS)
+
 
 if (USE_WASM_COMPATIBLE_SOURCE)
   set(SPM_BUILD_LIBRARY_ONLY ON CACHE BOOL "Build only sentencepiece library (skip building executables)")
@@ -61,10 +115,11 @@ if (COMPILE_WASM)
   set(WORMHOLE ON CACHE BOOL "Use WASM wormhole in intgemm https://bugzilla.mozilla.org/show_bug.cgi?id=1672160")
 endif()
 
-if(M32_BINARIES OR COMPILE_WASM)
+
+if(COMPILE_WASM)
     set("BUILD_WIDTH" "-m32")
-else(M32_BINARIES OR COMPILE_WASM)
-    set("BUILD_WIDTH" "-m64")
+else(COMPILE_WASM)
+    set("BUILD_WIDTH" "")
 endif()
 
 if(NOT COMPILE_WASM)
@@ -194,7 +249,6 @@ if(MSVC)
     add_definitions(-DUSE_FBGEMM=1 -DFBGEMM_STATIC=1)
   endif(USE_FBGEMM)
 else(MSVC)
-
   # Check we are using at least g++ 5.0
   if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.0)
     message(FATAL_ERROR "FATAL ERROR: Compiling Marian requires at least g++ 5.0, your version is ${CMAKE_CXX_COMPILER_VERSION}")
@@ -249,12 +303,14 @@ else(MSVC)
     # -msse4.1 once marian can solely be compiled with intgemm ("onnxjs" will be removed in that case)
     set(INTRINSICS "-mssse3 -msimd128")
   else()
-    set(INTRINSICS "-msse4.1")
+    if(CMAKE_SYSTEM_PROCESSOR STREQUAL x86_64 OR CMAKE_SYSTEM_PROCESSOR STREQUAL amd64)
+      set(INTRINSICS "-msse4.1")
+    endif ()
   endif()
 
   if(USE_FBGEMM)
     set(EXT_LIBS ${EXT_LIBS} fbgemm dl)
-    add_definitions(-DUSE_FBGEMM=1)
+    add_compile_definitions(USE_FBGEMM=1)
   endif(USE_FBGEMM)
 
   if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 9.0)
@@ -263,7 +319,7 @@ else(MSVC)
     set(CLANG_IGNORE_UNUSED_VALUES "-Wno-unused-value")
     set(CLANG_IGNORE_UNUSED_PRIVATE_FIELD -Wno-unused-private-field;) # This is necessary for the APPLE clang compiler to appear after -Werror
   endif()
-  set(DISABLE_GLOBALLY "-Wno-unused-result ${CLANG_IGNORE_UNKNOWN_CUDA} ${CLANG_IGNORE_UNUSED_VALUES}") # This needs to appear here as well to appease clang11+ on linux
+  set(DISABLE_GLOBALLY "-Wno-unused-result ${CLANG_IGNORE_UNKNOWN_CUDA} ${CLANG_IGNORE_UNUSED_VALUES} ${ARM_WARNINGS}") # This needs to appear here as well to appease clang11+ on linux
 
   # These are used in src/CMakeLists.txt on a per-target basis
   list(APPEND ALL_WARNINGS -Wall; -Werror; -Wextra; -Wno-unused-result; -Wno-deprecated;
@@ -323,6 +379,7 @@ else(MSVC)
     set(CMAKE_C_FLAGS_PROFUSE         "${CMAKE_C_FLAGS_RELWITHDEBINFO} -fprofile-use -fprofile-correction")
   endif(COMPILE_WASM)
 endif(MSVC)
+
 
 # with gcc 7.0 and above we need to mark fallthrough in switch case statements
 # that can be done in comments for backcompat, but CCACHE removes comments.
@@ -544,16 +601,22 @@ endif(USE_MPI)
 ###############################################################################
 # Find BLAS library for CPU compilation
 if(COMPILE_CPU)
-  set(EXT_LIBS ${EXT_LIBS} intgemm)       # Move the intgemm bits on top since they compile with every single variant
+  if(USE_INTGEMM)
+      set(EXT_LIBS ${EXT_LIBS} intgemm)       # Move the intgemm bits on top since they compile with every single variant
+  endif(USE_INTGEMM)
+
+  if(USE_RUY OR USE_RUY_SGEMM)
+    set(EXT_LIBS ${EXT_LIBS} ruy) 
+  endif(USE_RUY OR USE_RUY_SGEMM)
+
   add_definitions(-DCOMPILE_CPU=1)        # Move the compile CPU definition on top since we want to compile intgemm when we set compile CPU
                                           # in case a BLAS vendor is not found, we have a runtime error, although we should probably not allow the compilation to go on
                                           # if there are BLAS vendors, we have other runtime checks with sane error messages.
-  if(USE_WASM_COMPATIBLE_BLAS)
+  if(USE_ONNX_SGEMM)
     ## Use a wasm compatible BLAS
+    ## ^ SGEMM != BLAS
     set(EXT_LIBS ${EXT_LIBS} onnx-sgemm)
-    set(BLAS_FOUND TRUE)
-    set(BLAS_VENDOR "ONNX-SGEMM")
-    add_definitions(-DBLAS_FOUND=1  -DWASM_COMPATIBLE_BLAS=1) # Might be required in some cmake files further down the line, let's avoid using add_compile_definitions in this codeblock
+    add_definitions(-DUSE_ONNX_SGEMM=1) # Might be required in some cmake files further down the line, let's avoid using add_compile_definitions in this codeblock
   elseif(APPLE AND USE_APPLE_ACCELERATE)
     set(BLAS_VENDOR "Accelerate")
     # see https://developer.apple.com/documentation/accelerate for more info
@@ -561,7 +624,9 @@ if(COMPILE_CPU)
     include_directories("/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Accelerate.framework/Frameworks/vecLib.framework/Headers")
     set(EXT_LIBS ${EXT_LIBS} "-framework Accelerate")
     add_definitions(-DBLAS_FOUND=1)
-  else(USE_WASM_COMPATIBLE_BLAS)
+  elseif(USE_RUY_SGEMM)
+    add_compile_definitions(USE_RUY_SGEMM=1)
+  else(USE_ONNX_SGEMM)
     if(USE_MKL)
       find_package(MKL)
     endif(USE_MKL)
@@ -582,7 +647,8 @@ if(COMPILE_CPU)
         endif(CBLAS_FOUND)
       endif(BLAS_FOUND)
     endif(MKL_FOUND)
-  endif(USE_WASM_COMPATIBLE_BLAS)
+  endif(USE_ONNX_SGEMM)
+
 endif(COMPILE_CPU)
 
 ###############################################################################
