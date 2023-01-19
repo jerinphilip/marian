@@ -220,6 +220,7 @@ struct Ops<double> {
 #pragma GCC diagnostic pop
 #else
 #include "3rd_party/sse_mathfun.h"
+#include <immintrin.h>
 #endif
 
 
@@ -277,6 +278,10 @@ struct Ops<float32x4> {
   static inline float32x4 round(const float32x4& x)  { return _mm_round_ps(x, _MM_FROUND_TO_NEAREST_INT); }
   static inline float32x4 floor(const float32x4& x)  { return _mm_floor_ps(x); }
   static inline float32x4 ceil(const float32x4& x)   { return _mm_ceil_ps(x); }
+#else
+  static inline float32x4 round(const float32x4& x)  { return loop4(Ops<float>::round, x); }
+  static inline float32x4 floor(const float32x4& x)  { return loop4(Ops<float>::floor, x); }
+  static inline float32x4 ceil(const float32x4& x)  { return loop4(Ops<float>::ceil, x); }
 #endif
   static inline float32x4 add(const float32x4& x, const float32x4& y) { return _mm_add_ps(x, y); }
   static inline float32x4 sub(const float32x4& x, const float32x4& y) { return _mm_sub_ps(x, y); }
