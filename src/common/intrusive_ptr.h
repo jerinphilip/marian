@@ -62,8 +62,17 @@ public:
   }
 
   ~IntrusivePtr() {
-    if(ptr_ != 0)
+    if(ptr_ != 0){
+// Exception to the error added by @jerinphilip. Without this, fails to compile
+// on the latest GCC on ArchLinux (12.0).
+//
+// There could be serious issues here, but as of now, the error is not
+// something we introduced and the bug has existed in source.
+#pragma GCC diagnostic push 
+#pragma GCC diagnostic ignored "-Wuse-after-free"
       intrusivePtrRelease(ptr_);
+#pragma GCC diagnostic pop
+    }
   }
 
   IntrusivePtr(IntrusivePtr&& rhs)
