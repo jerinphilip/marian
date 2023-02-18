@@ -4,7 +4,7 @@
 #include "3rd_party/ExceptionWithCallStack.h"
 #include <time.h>
 #include <stdlib.h>
-#ifdef __unix__
+#ifdef __unix__ 
 #include <signal.h>
 #endif
 
@@ -35,9 +35,18 @@ std::shared_ptr<spdlog::logger> createStderrLogger(const std::string& name,
     sinks.push_back(file_sink);
   }
 
-  auto logger = std::make_shared<spdlog::logger>(name, begin(sinks), end(sinks));
+  // Check if there is a logger already by this name. Normally this would crash. 
+  // We want the logger to shutdown properly in bergamot-translator, so it is
+  // attached with the lifetime of the translating threadpool.
+  //
+  // This however interferes with notebooks, so we only change pattern if the
+  // previous logger is not collected.
+  std::shared_ptr<spdlog::logger> logger = spdlog::get(name);
+  if(!logger){
+    logger = std::make_shared<spdlog::logger>(name, begin(sinks), end(sinks));
+    spdlog::register_logger(logger);
+  }
 
-  spdlog::register_logger(logger);
   logger->set_pattern(pattern);
   return logger;
 }
@@ -128,7 +137,7 @@ static void setErrorHandlers() {
   std::set_terminate(unhandledException);
 #ifdef __unix__
   // catch segfaults
-  struct sigaction sa = { {0} };
+  struct sigaction sa = {};
   sigemptyset(&sa.sa_mask);
   sa.sa_flags = SA_SIGINFO;
   sa.sa_sigaction = [](int /*signal*/, siginfo_t*, void*) { ABORT("Segmentation fault"); };
@@ -149,8 +158,8 @@ void switchtoMultinodeLogging(std::string nodeIdStr) {
 
 namespace marian {
   std::string noinline getCallStack(size_t skipLevels) {
-  #ifdef WASM_COMPATIBLE_SOURCE
-    return "Callstacks not supported in WASM builds currently";
+  #if defined(WASM_COMPATIBLE_SOURCE) || defined(__ANDROID__)
+    return "Callstacks not supported in WASM or Android builds currently";
   #else
     return ::Microsoft::MSR::CNTK::DebugUtil::GetCallStack(skipLevels + 2, /*makeFunctionNamesStandOut=*/true);
   #endif

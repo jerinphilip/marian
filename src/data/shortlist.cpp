@@ -31,7 +31,6 @@ void LexicalShortlistGenerator::load(const std::string& fname) {
 }
 
 void LexicalShortlistGenerator::prune(float threshold /* = 0.f*/) {
-  size_t i = 0;
   for(auto& probs : data_) {
     std::vector<std::pair<float, WordIndex>> sorter;
     for(auto& it : probs)
@@ -48,7 +47,6 @@ void LexicalShortlistGenerator::prune(float threshold /* = 0.f*/) {
         break;
     }
 
-    ++i;
   }
 }
 
