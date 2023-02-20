@@ -51,7 +51,7 @@ public:
         shortterm_(New<WeakMemory>()), 
         longterm_(New<Memory>()) {}
 
-  void reserve(size_t bytes) { tensors_->reserve(bytes); } 
+  void reserve(size_t bytes) { tensors_->reserve(bytes); }
 
   void throwAtReallocation(bool throwAtRealloc) {
     tensors_->throwAtReallocation(throwAtRealloc);
