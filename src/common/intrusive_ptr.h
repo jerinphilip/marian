@@ -71,7 +71,7 @@ public:
     rhs.ptr_ = 0;
   }
 
-  inline size_t useCount() const {
+  inline size_t useCount() {
     return references(ptr_);
   }
 
