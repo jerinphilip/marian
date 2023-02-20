@@ -43,8 +43,8 @@ public:
         shortterm_(New<WeakMemory>()),
         longterm_(New<Memory>()){}
 
-  // We introduce this third constructor, where we can share a workspace
-  // (static preallocated storage) from a worker which comes from elsewhere. 
+  // This constructor is for cases when we can share a workspace (static
+  // preallocated storage) from a worker which comes from elsewhere. 
   Tensors(Ptr<TensorAllocator> tensors, Ptr<TensorAllocator> cache)
       : tensors_(tensors), 
         cache_(cache), 
@@ -180,6 +180,7 @@ public:
   virtual void setDevice(DeviceId deviceId = {0, DeviceType::gpu},
                          Ptr<Device> device = nullptr);
 
+  // For sharing workspace between different models.
   void setWorkspaces(Ptr<TensorAllocator> tensors, Ptr<TensorAllocator> cache){
       tensors_ = New<Tensors>(tensors, cache);
   }
