@@ -1,5 +1,6 @@
 #include "graph/expression_graph.h"
 #include "tensors/tensor_operators.h"
+
 #include <sstream>
 
 namespace marian {
