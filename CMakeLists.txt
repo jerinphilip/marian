@@ -325,7 +325,7 @@ else(MSVC)
   list(APPEND ALL_WARNINGS -Wall; -Werror; -Wextra; -Wno-unused-result; -Wno-deprecated;
     -Wno-pragmas; -Wno-unused-parameter; -Wno-unused-function;
     -Wno-unused-value; -Wno-unknown-pragmas; -Wno-sign-compare;
-    -Wno-missing-field-initializers; ${CLANG_IGNORE_UNUSED_PRIVATE_FIELD})
+    -Wno-missing-field-initializers; -Wno-use-after-free; -Wno-restrict; ${CLANG_IGNORE_UNUSED_PRIVATE_FIELD})
 
   # This warning does not exist prior to gcc 5.0
   if(CMAKE_COMPILER_IS_GNUCC AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 5.0)
