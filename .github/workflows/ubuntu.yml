@@ -13,7 +13,7 @@ jobs:
         include:
           # Ubuntu 20.04 supports CUDA 11+
           # Unit tests and examples are not compiled to save disk space
-          - name: "Ubuntu 20.04 CUDA 11.2 gcc-9"
+          - name: "Ubuntu 20.04 gcc-9"
             os: ubuntu-20.04
             cuda: "11.2"
             gcc: 9
@@ -22,7 +22,7 @@ jobs:
             unit_tests: false
             examples: false
           # Unit tests and examples are not compiled to save disk space
-          - name: "Ubuntu 22.04 CUDA 11.7 gcc-11"
+          - name: "Ubuntu 22.04 gcc-11"
             os: ubuntu-22.04
             cuda: "11.7"
             gcc: 11
