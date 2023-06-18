@@ -73,7 +73,7 @@ jobs:
           -DCOMPILE_CPU=${{ matrix.cpu }} \
           -DCOMPILE_CUDA=${{ matrix.gpu }} \
           -DCOMPILE_EXAMPLES=${{ matrix.examples }} \
-          -DCOMPILE_SERVER=on \
+          -DCOMPILE_SERVER=OFF \
           -DCOMPILE_TESTS=${{ matrix.unit_tests }} \
           -DCUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda-${{ matrix.cuda }} \
           -DUSE_FBGEMM=${{ matrix.cpu }} \
@@ -97,6 +97,5 @@ jobs:
         ./marian --version
         ./marian-decoder --version
         ./marian-scorer --version
-        ./marian-server --version
         ./spm_encode --version
 
