@@ -8,7 +8,6 @@
 
 namespace marian {
 
-#define NodeOp(op) [=]() { op; }
 typedef std::vector<std::function<void()>> NodeOps;
 
 class AutoTunerRecorder;

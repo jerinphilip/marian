@@ -2,6 +2,7 @@
 #include "graph/auto_tuner.h"
 #include "graph/expression_graph.h"
 #include "tensors/backend.h"
+#include <functional>
 
 namespace marian {
 

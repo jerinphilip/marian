@@ -6,12 +6,16 @@
 
 #include <functional>
 #include <iostream>
+#include <sstream>
 #include <memory>
 #include <string>
 #include <vector>
+#include <csignal>
 
-#define THREAD_GUARD(body) [&]() { body; }() // test if THREAD_GUARD is neccessary, remove if no problems occur.
-#define NodeOp(op) [=]() { op; }
+
+#include </home/jerin/code/kaffir-lime/scripts/marian-trace-gen.h>
+
+typedef std::vector<std::function<void()>> NodeOps;
 
 // helper macro to disable optimization (gcc only)
 // To use this, just insert DONT_OPTIMIZE right before the function definition
