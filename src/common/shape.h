@@ -139,10 +139,11 @@ public:
 
   std::string toString() const {
     std::stringstream strm;
-    strm << "shape=" << (*this)[0];
+    // strm << "shape=" ;
+    strm << (*this)[0];
     for(int i = 1; i < size(); ++i)
       strm << "x" << (*this)[i];
-    strm << " size=" << elements();
+    // strm << " size=" << elements();
     return strm.str();
   }
 
