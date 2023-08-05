@@ -27,7 +27,7 @@ bool shifted_;
 
   NodeOps forwardOps() override {
 #ifdef COMPILE_CPU
-    return { [=]() {
+    auto PrepareA =  [=]() {
       quantMult_ = *child(1)->val()->data();
   #if defined(WASM)
       ABORT_IF(intgemm_<vtype>::intgemmType == Type::intgemm16,
@@ -56,7 +56,8 @@ bool shifted_;
                                       cols(child(0)->val()));
       }
   #endif
-  }};
+  };
+    return {NodeOp(PrepareA())};
 #else
     return {NodeOp()};
 #endif
@@ -481,7 +482,7 @@ public:
 
   NodeOps forwardOps() override {
 #ifdef COMPILE_CPU
-    return { [=]() {
+    auto AffineOp = [=]() {
           float aQuantMult = std::static_pointer_cast<PrepareANodeOp<vtype> >(child(0))->quantMult_;
           float bQuantMult;
           if (child(1)->type() == "intgemmSelectColumnsB") {
@@ -530,7 +531,8 @@ public:
                                   intgemm::callbacks::UnquantizeAndAddBiasAndWrite(unquant_mult, child(2)->val()->data(), val_->data()));
           }
       #endif
-    }};
+    };
+    return { NodeOp(AffineOp())};
 #else
     return {NodeOp()};
 #endif

@@ -43,7 +43,7 @@ public:
   }
 
   NodeOps forwardOps() override {
-    return {NodeOp(
+    auto fetchAlpha = [&](){
       auto map = child(0)->graph()->params()->getMap();
       const auto mapiter = map.find(name());
       if (mapiter != map.end()) {
@@ -51,7 +51,8 @@ public:
       } else {
         ABORT("We did not find an alpha in the model named: {}.", name());
       }
-    )};
+    };
+    return {NodeOp(fetchAlpha())};
   }
 
   bool equal(Expr node) override {
