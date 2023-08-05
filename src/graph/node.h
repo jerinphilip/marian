@@ -9,6 +9,7 @@
 #include "tensors/tensor.h"
 
 #include "graph/chainable.h"
+#include "common/definitions.h"
 
 namespace marian {
 
@@ -82,7 +83,13 @@ public:
   virtual bool memoize() override { return memoize_; };
   virtual void setMemoize(bool memoize) override { memoize_ = memoize; };
 
-  virtual void setId(size_t id) override { id_ = id; }
+  virtual void setId(size_t id) override {
+    const char* var = std::getenv("BERGAMOT_TRACK_VAR");
+    if(var && id == std::stoi(var)) {
+      std::raise(SIGTRAP);
+    }
+    id_ = id;
+  }
 
   virtual size_t getId() override { return id_; }
 

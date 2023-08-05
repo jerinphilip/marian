@@ -65,7 +65,12 @@ void Node::forward() {
   if(recorder_)
     recorder_->start(recorderHash_);
 
-  runForward(forwardOps());
+  NodeOps ops = forwardOps();
+  const char *var = std::getenv("BERGAMOT_TRACK_VAR");
+  if(var && std::stoi(var) == getId()){
+      std::raise(SIGTRAP);
+  }
+  runForward(ops);
 
   if(recorder_)
     recorder_->stop(recorderHash_, recorderStop_);
