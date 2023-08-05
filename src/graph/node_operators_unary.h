@@ -810,6 +810,11 @@ public:
 
   void allocate() override {}
   void free() override {}
+  NodeOps forwardOps() override {
+    auto Reshape = [&](){ };
+    return {NodeOp(Reshape)};
+  }
+
 
   void forward() override {}
   void backward() override {}
@@ -882,6 +887,11 @@ public:
   void backward() override {
     using namespace marian::functional;
     Element(_1 = clip(_1, clipValue_), adj_);
+  }
+
+  virtual NodeOps forwardOps() override {
+      auto ClipGradientOp = [&](){ std::cerr << __PRETTY_FUNCTION__ << "Stray op!\n"; };
+      return {NodeOp(ClipGradientOp)};
   }
 
   void init_dependent() override { clipee_->init_dependent(); }
@@ -959,6 +969,11 @@ public:
     Shape outShape = shape;
     outShape.set(axis, slice.end - slice.begin);
     return outShape;
+  }
+
+  virtual NodeOps forwardOps() override {
+      auto SliceViewOp = [&](){ std::cerr << __PRETTY_FUNCTION__ << "Stray op!\n"; };
+      return {NodeOp(SliceViewOp)};
   }
 
   void allocate() override {}

@@ -41,6 +41,11 @@ public:
     (*forward_)(this, children_);
   }
 
+  virtual NodeOps forwardOps() override {
+      auto LambdaOp = [&](){ std::cerr << __PRETTY_FUNCTION__ << "Stray op!\n"; };
+      return {NodeOp(LambdaOp)};
+  }
+
   void backward() override {
     ABORT_IF(!backward_, "No backward lambda given?");
     (*backward_)(this, children_);
@@ -1152,6 +1157,11 @@ struct ConcatenateNodeOp : public NaryNodeOp {
     for(size_t i = 0; i < children_.size(); ++i)
       concatenees.push_back(child(i)->val());
     Concatenate(val_, concatenees, axis_);
+  }
+
+  virtual NodeOps forwardOps() override {
+      auto ConcatenateOp = [&](){ std::cerr << __PRETTY_FUNCTION__ << "Stray op!\n"; };
+      return {NodeOp(ConcatenateOp)};
   }
 
   void backward() override {

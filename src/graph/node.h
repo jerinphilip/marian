@@ -57,7 +57,10 @@ public:
 
   virtual float scalar() override;
 
-  virtual NodeOps forwardOps() override { return {}; };
+  virtual NodeOps forwardOps() override  = 0; /*override{
+      return {NodeOp([&](){ std::cerr << __PRETTY_FUNCTION__ << "Stray op!\n"; })};
+  };
+  */
   virtual NodeOps backwardOps() override { return {}; };
 
   virtual void runForward(const NodeOps& ops) {

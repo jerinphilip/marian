@@ -50,6 +50,12 @@ public:
   void init_dependent() override {}
   void set_zero_adjoint() override {}
 
+  virtual NodeOps forwardOps() override {
+      auto TupleViewOp = [&](){ std::cerr << __PRETTY_FUNCTION__ << "Stray op!\n"; };
+      return {NodeOp(TupleViewOp)};
+  }
+
+
   // Return the additional tuple tensor as the val() tensor for the view
   Tensor& val() override {
     // we have to use a raw pointer cast here as we cannot add IntrusivePtr ref-counting to TupleNode
@@ -130,6 +136,11 @@ public:
     TopK(/*out*/val_, /*out: topkIndices=*/tupleVal_,
          graph()->allocator(),
          child(0)->val(), k_, axis_, descending_);
+  }
+
+  virtual NodeOps forwardOps() override {
+      auto TopKOp = [&](){ std::cerr << __PRETTY_FUNCTION__ << "Stray op!\n"; };
+      return {NodeOp(TopKOp)};
   }
 
   void backward() override {

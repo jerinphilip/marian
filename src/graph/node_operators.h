@@ -17,6 +17,11 @@ struct ConstantNode : public Node {
   virtual void allocate() override;
   virtual void init() override;
 
+  virtual NodeOps forwardOps() override {
+      auto ConstantOp = [&](){ std::cerr << __PRETTY_FUNCTION__ << "Stray op!\n"; };
+      return {NodeOp(ConstantOp)};
+  }
+
   const std::string type() override { return "const"; }
 
   const std::string form() override { return "diamond"; }
@@ -52,6 +57,11 @@ struct ParamNode : public Node {
 
   virtual void allocate() override {
     ABORT_IF(!val_, "Parameters should be allocated by their graph. Parameter {} was not", name_);
+  }
+
+  virtual NodeOps forwardOps() override {
+      auto ParamOp = [&](){ std::cerr << __PRETTY_FUNCTION__ << "Stray op!\n"; };
+      return {NodeOp(ParamOp)};
   }
 
   virtual void init() override;
