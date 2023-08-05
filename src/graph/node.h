@@ -49,7 +49,8 @@ protected:
 
 public:
   Node(Ptr<ExpressionGraph> graph, const Shape& shape, const Type& valueType = Type::float32)
-    : graph_(graph), shape_(shape), valueType_(valueType) {}
+    : graph_(graph), shape_(shape), valueType_(valueType) {
+    }
 
   virtual ~Node() {
     free();
@@ -64,8 +65,9 @@ public:
   virtual NodeOps backwardOps() override { return {}; };
 
   virtual void runForward(const NodeOps& ops) {
-    for(auto&& op : ops)
+    for(auto&& op : ops){
       op();
+    }
   }
 
   virtual void runBackward(const NodeOps& ops) {
@@ -211,7 +213,7 @@ struct NaryNodeOp : public Node {
   }
 
   NaryNodeOp(const std::vector<Expr>& nodes)
-  : NaryNodeOp(nodes, nodes[0]->shape()) {}
+  : NaryNodeOp(nodes, nodes[0]->shape()) { }
 
   // this contructor will try to deduce the node type automatically
   NaryNodeOp(const std::vector<Expr>& nodes, Shape shape)
