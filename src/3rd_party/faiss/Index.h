@@ -12,6 +12,7 @@
 
 #include "utils/misc.h"
 #include <cstdio>
+#include <cstdint>
 #include <typeinfo>
 #include <string>
 #include <sstream>
