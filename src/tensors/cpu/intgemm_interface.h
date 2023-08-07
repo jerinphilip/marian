@@ -257,7 +257,7 @@ struct QuantMultNodeOp : public UnaryNodeOp {
 #pragma warning(push)
 #pragma warning(disable: 4127) //VSCODE thinks line 222 is constant conditional expression, which it is only after the template resolution, not before.
   NodeOps forwardOps() override {
-    return  {[=](){
+    auto QuantMult =  [=](){
     #ifdef COMPILE_CPU
       if (vtype == Type::int16) {
         *val_->data() = 1024.0f;
@@ -281,7 +281,8 @@ struct QuantMultNodeOp : public UnaryNodeOp {
         #endif
       }
     #endif // COMPILE_CPU
-    }};
+    };
+    return  {NodeOp(QuantMult())};
   }
 #pragma warning(pop)
   NodeOps backwardOps() override {
@@ -330,7 +331,7 @@ public:
     //std::cerr << "TrueBias: " << child(0)->name() << " type: " << child(0)->type() << " bQuantMult: " << this->child(3)->val()->data()[0] <<  " aQuantMult: " << this->child(2)->val()->data()[0] << std::endl;
     //std::cerr << "Bias name and val: " << child(0)->name() << " " << child(0)->val()->data()[0] << std::endl;
 #ifdef COMPILE_CPU
-    return { [=]() {
+    auto PrepareBias =   [=]() {
       if (alreadyPrepared_) {
         //God Knows why trying to assign the bias tensor to this node causes a crash, the second time it's referenced
         //even though it's supposed to work fine. We use a memory copy instead.
@@ -348,13 +349,19 @@ public:
         float scale_b = *quant_mult_b->data();
         int8PrepareBias((const int8_t *)b->data(), scale_a, 0.0 /*zero_point_a*/, scale_b, 0.0 /*zero_point_b*/, rows(b), cols(b), bias->data(), val_->data());
     #elif defined(USE_INTGEMM)
-        float unquant_mult = (-1)*((127.0f / *quant_mult_a->data())*(127.0f / *quant_mult_b->data()))/(127.0f); //Minus one to invert add_ps later on
-        intgemm::Int8Shift::PrepareBias((const int8_t *)b->data(), rows(b), cols(b), intgemm::callbacks::UnquantizeAndAddBiasAndWrite(unquant_mult, bias->data(), val_->data()));
+        float qa = *quant_mult_a->data();
+        float qb = *quant_mult_b->data();
+        float qai = 127.0F / qa;
+        float qbi = 127.0F / qb;
+        float unquant_mult = (-1)*((qai)*(qbi))/(127.0f); //Minus one to invert add_ps later on
+        auto callback = intgemm::callbacks::UnquantizeAndAddBiasAndWrite(unquant_mult, bias->data(), val_->data());
+        intgemm::Int8Shift::PrepareBias((const int8_t *)b->data(), rows(b), cols(b), callback);
     #else
         ABORT("PrepareBias should not be called on ARM");
     #endif
       }
-    }};
+    };
+    return {NodeOp(PrepareBias())};
 #else
     return {NodeOps()};
 #endif
