@@ -93,8 +93,7 @@ bool transposed_; /*This is only used for the output layer which has a different
   }
 
   NodeOps forwardOps() override {
-#ifdef COMPILE_CPU
-   return { [=]() {
+    auto PrepareBNodeOp =  [=]() {
       quantMult_ = *child(1)->val()->data();
       if (isIntgemm(child(0)->value_type())) {
         val_ = child(0)->val();
@@ -135,7 +134,9 @@ bool transposed_; /*This is only used for the output layer which has a different
         }
 #endif
       }
-    }};
+    };
+#ifdef COMPILE_CPU
+   return {NodeOp(PrepareBNodeOp())};
 #else
    return {NodeOp()};
 #endif
@@ -180,7 +181,7 @@ public:
 
   NodeOps forwardOps() override {
 #ifdef COMPILE_CPU
-    return { [=]() {
+    auto SelectColumnsB =  [=]() {
       //We get the quantization multiplier from a PrepareB or directly from the input
       if (child(0)->type() == "intgemmPrepareB") {
         auto bPreppedNode = std::static_pointer_cast<PrepareBNodeOp<vtype> >(child(0));
@@ -209,7 +210,8 @@ public:
                     indices_.data(),
                     indices_.data()+indices_.size());
   #endif
-    }};
+    };
+    return {NodeOp(SelectColumnsB())};
 #else
     return {NodeOp()};
 #endif
