@@ -94,9 +94,6 @@ If you used the script `package-benchmark.sh` mentioned above then open followin
 
     `http://localhost:8000/marian-decoder.html?arguments=-m /model.intgemm.alphas.bin -v /vocab.esen.spm /vocab.esen.spm -i /newstest2013.es.top300lines --beam-size 1 --mini-batch 32 --maxi-batch 100 --maxi-batch-sort src -w 128 --skip-cost --shortlist /lex.s2t 50 50 --cpu-threads 1 --int8shiftAlphaAll`
 
-Note that intgemm options are only available in Firefox Nightly verified by visiting [this link](https://axis-of-eval.org/sandbox/wormhole-test.html).
-
-
 ### <a name="Docker-Compilation"></a> Compiling wasm marian-decoder on Docker
 
 Alternatively, wasm marian-decoder can also be compiled on docker.
