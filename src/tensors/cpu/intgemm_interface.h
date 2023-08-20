@@ -384,9 +384,9 @@ public:
   }
 
   NodeOps forwardOps() override {
-    //std::cerr << "FakeBias: " << child(0)->name() << " bQuantMult: " << this->child(2)->val()->data()[0] << " aQuantMult: " << this->child(1)->val()->data()[0] << std::endl;
 #ifdef COMPILE_CPU
-    return { [=]() {
+    //std::cerr << "FakeBias: " << child(0)->name() << " bQuantMult: " << this->child(2)->val()->data()[0] << " aQuantMult: " << this->child(1)->val()->data()[0] << std::endl;
+    auto PrepareFakeBias =  [=]() {
     auto b = this->child(0)->val();
     auto quant_mult_a = this->child(1)->val();
     auto quant_mult_b = this->child(2)->val();
@@ -401,7 +401,8 @@ public:
   #else
     ABORT("PrepareBias should not be called on ARM");
   #endif
-    }};
+    };
+    return {NodeOp(PrepareFakeBias())};
 #else
     return {NodeOp()};
 #endif
@@ -429,7 +430,7 @@ public:
 
   NodeOps forwardOps() override {
 #ifdef COMPILE_CPU
-    return { [=]() {
+    auto Dot =  [=]() {
           float aQuantMult = std::static_pointer_cast<PrepareANodeOp<vtype> >(child(0))->quantMult_;
           float bQuantMult;
           if (child(1)->type() == "intgemmSelectColumnsB") {
@@ -457,7 +458,8 @@ public:
                                            cols(child(1)->val()),
                                            intgemm::callbacks::UnquantizeAndWrite(unquant_mult, val_->data()));
       #endif
-    }};
+    };
+    return {NodeOp(Dot())};
 #else
     return {NodeOp()};
 #endif
