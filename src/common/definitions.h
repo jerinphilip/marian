@@ -13,7 +13,7 @@
 #include <csignal>
 
 
-#include </home/jerin/code/kaffir-lime/scripts/marian-trace-gen.h>
+#include </home/jerin/code/slimt/scripts/marian-trace-gen.h>
 
 typedef std::vector<std::function<void()>> NodeOps;
 
