@@ -6,7 +6,6 @@ if(NOT MSVC)
   set(APP_TESTS
       logger
       dropout
-      sqlite
       prod
       cli
       pooling

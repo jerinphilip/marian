@@ -3,9 +3,6 @@
 #include "common/config.h"
 #include "common/utils.h"
 #include "data/batch_generator.h"
-#ifndef _MSC_VER // @TODO: include SqLite in Visual Studio project
-#include "data/corpus_sqlite.h"
-#endif
 #include "models/model_task.h"
 #include "training/scheduler.h"
 #include "training/validator.h"
@@ -26,11 +23,7 @@ public:
 
     Ptr<CorpusBase> dataset;
     if(!options_->get<std::string>("sqlite").empty())
-#ifndef _MSC_VER // @TODO: include SqLite in Visual Studio project
-      dataset = New<CorpusSQLite>(options_);
-#else
-      ABORT("SqLite presently not supported on Windows");
-#endif
+      ABORT("SqLite not supported in this version of marian. Use upstream for training new models.");
     else
       dataset = New<Corpus>(options_);
 
