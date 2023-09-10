@@ -108,7 +108,6 @@ endif()
 
 if (NOT USE_WASM_COMPATIBLE_SOURCE)
   list(APPEND MARIAN_SOURCES
-    data/corpus_sqlite.cpp
     layers/lsh.cpp
     optimizers/quantizer.cpp
 
@@ -122,7 +121,6 @@ if (NOT USE_WASM_COMPATIBLE_SOURCE)
     microsoft/quicksand.cpp
     microsoft/cosmos.cpp
 
-    $<TARGET_OBJECTS:SQLiteCpp>
     $<TARGET_OBJECTS:zlib>
     $<TARGET_OBJECTS:faiss>
   )

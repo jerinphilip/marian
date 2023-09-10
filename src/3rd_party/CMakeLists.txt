@@ -3,7 +3,6 @@ include_directories(.)
 
 add_subdirectory(./yaml-cpp)
 if(NOT USE_WASM_COMPATIBLE_SOURCE)
-  add_subdirectory(./SQLiteCpp)
   add_subdirectory(./zlib)
 
   add_subdirectory(./faiss)
@@ -142,20 +141,10 @@ if(USE_SENTENCEPIECE)
   endif(GENERATE_MARIAN_INSTALL_TARGETS)
 endif(USE_SENTENCEPIECE)
 
-include_directories(./SQLiteCpp/include)
 include_directories(./CLI)
 include_directories(./pathie-cpp/include)
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  if(NOT USE_WASM_COMPATIBLE_SOURCE)
-  #set_target_properties(SQLiteCpp PROPERTIES COMPILE_FLAGS
-  set_property(TARGET SQLiteCpp APPEND_STRING PROPERTY COMPILE_FLAGS
-    " -Wno-parentheses-equality -Wno-unused-value")
-  if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 9.0)
-    set_property(TARGET SQLiteCpp APPEND_STRING PROPERTY COMPILE_FLAGS
-      " -Wno-implicit-int-float-conversion")
-  endif()
-  endif()
   set_property(TARGET libyaml-cpp APPEND_STRING PROPERTY COMPILE_FLAGS
     " -fPIC -Wno-unused-value")
   set_property(TARGET pathie-cpp APPEND_STRING PROPERTY COMPILE_FLAGS
