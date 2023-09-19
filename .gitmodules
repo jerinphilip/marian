@@ -28,4 +28,4 @@
 	url = https://github.com/google/ruy
 [submodule "src/3rd_party/simd_utils"]
 	path = src/3rd_party/simd_utils
-	url = https://github.com/JishinMaster/simd_utils/
+	url = https://github.com/browsermt/simd_utils.git
