@@ -59,6 +59,15 @@ jobs:
             gpu: false
             unit_tests: true
             examples: false
+          - name: "Ubuntu 22.04 clang-16 CPU"
+            os: ubuntu-22.04
+            cuda: ""
+            gcc: ""
+            clang: 16
+            cpu: true
+            gpu: false
+            unit_tests: true
+            examples: false
 
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.name }}
@@ -76,6 +85,7 @@ jobs:
       run: |
         sudo apt-get install -y libunwind-dev libgoogle-perftools-dev libprotobuf-dev protobuf-compiler libboost-system-dev
         [ -z "${{ matrix.gcc }}" ] || sudo apt-get install -y gcc-${{ matrix.gcc }} g++-${{ matrix.gcc }}
+        [ -z "${{ matrix.clang }}" ] || { wget https://apt.llvm.org/llvm.sh; sudo bash ./llvm.sh ${{ matrix.clang }}; }
 
     # https://software.intel.com/content/www/us/en/develop/articles/installing-intel-free-libs-and-python-apt-repo.html
     - name: Install MKL
@@ -129,4 +139,3 @@ jobs:
         ./marian-decoder --version
         ./marian-scorer --version
         ./spm_encode --version
-
