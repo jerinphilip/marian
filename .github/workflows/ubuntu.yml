@@ -17,6 +17,7 @@ jobs:
             os: ubuntu-20.04
             cuda: "11.2"
             gcc: 9
+            clang: ""
             cpu: true
             gpu: true
             unit_tests: false
@@ -25,6 +26,7 @@ jobs:
             os: ubuntu-20.04
             cuda: "11.2"
             gcc: 9
+            clang: ""
             cpu: true
             gpu: false
             unit_tests: false
@@ -48,6 +50,15 @@ jobs:
             gpu: false
             unit_tests: false
             examples: false
+          - name: "Ubuntu 22.04 clang-14 CPU"
+            os: ubuntu-22.04
+            cuda: ""
+            gcc: ""
+            clang: 14
+            cpu: true
+            gpu: false
+            unit_tests: true
+            examples: false
 
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.name }}
@@ -62,7 +73,9 @@ jobs:
     # No need to install libprotobuf{17,10,9v5} on Ubuntu {20,18,16}.04 because it is installed together with libprotobuf-dev
     # Boost is no longer pre-installed on GitHub-hosted runners
     - name: Install dependencies
-      run: sudo apt-get install -y libunwind-dev libgoogle-perftools-dev libprotobuf-dev protobuf-compiler libboost-system-dev g++-${{ matrix.gcc }}
+      run: |
+        sudo apt-get install -y libunwind-dev libgoogle-perftools-dev libprotobuf-dev protobuf-compiler libboost-system-dev
+        [ -z "${{ matrix.gcc }}" ] || sudo apt-get install -y gcc-${{ matrix.gcc }} g++-${{ matrix.gcc }}
 
     # https://software.intel.com/content/www/us/en/develop/articles/installing-intel-free-libs-and-python-apt-repo.html
     - name: Install MKL
@@ -81,9 +94,10 @@ jobs:
     # https://github.com/actions/virtual-environments/issues/687#issuecomment-610471671
     - name: Configure CMake
       run: |
+        [ -z "${{ matrix.gcc }}" ] || export CC=/usr/bin/gcc-${{ matrix.gcc }} CXX=/usr/bin/g++-${{ matrix.gcc }} CUDAHOSTCXX=/usr/bin/g++-${{ matrix.gcc }}
+        [ -z "${{ matrix.clang }}" ] || export CC=/usr/bin/clang-${{ matrix.clang }} CXX=/usr/bin/clang++-${{ matrix.clang }}
         mkdir -p build
         cd build
-        CC=/usr/bin/gcc-${{ matrix.gcc }} CXX=/usr/bin/g++-${{ matrix.gcc }} CUDAHOSTCXX=/usr/bin/g++-${{ matrix.gcc }} \
         cmake .. \
           -DBoost_ARCHITECTURE=-x64 \
           -DCMAKE_BUILD_TYPE=Release \
