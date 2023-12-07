@@ -316,9 +316,10 @@ else(MSVC)
     # Clang-10.0.0 complains when CUDA is newer than 10.1
     set(CLANG_IGNORE_UNKNOWN_CUDA "-Wno-unknown-warning-option -Wno-unknown-cuda-version")
     set(CLANG_IGNORE_UNUSED_VALUES "-Wno-unused-value")
+    set(CLANG_IGNORE_CONSTEXPR_CONVERSION "-Wno-enum-constexpr-conversion") #SentencePiece
     set(CLANG_IGNORE_UNUSED_PRIVATE_FIELD -Wno-unused-private-field;) # This is necessary for the APPLE clang compiler to appear after -Werror
   endif()
-  set(DISABLE_GLOBALLY "-Wno-unused-result ${CLANG_IGNORE_UNKNOWN_CUDA} ${CLANG_IGNORE_UNUSED_VALUES} ${ARM_WARNINGS}") # This needs to appear here as well to appease clang11+ on linux
+  set(DISABLE_GLOBALLY "-Wno-unused-result ${CLANG_IGNORE_UNKNOWN_CUDA} ${CLANG_IGNORE_UNUSED_VALUES} ${CLANG_IGNORE_CONSTEXPR_CONVERSION} ${ARM_WARNINGS}") # This needs to appear here as well to appease clang11+ on linux
 
   # These are used in src/CMakeLists.txt on a per-target basis
   list(APPEND ALL_WARNINGS -Wall; -Werror; -Wextra; -Wno-unused-result; -Wno-deprecated;
