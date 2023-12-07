@@ -331,11 +331,11 @@ else(MSVC)
     list(APPEND ALL_WARNINGS -Wsuggest-override -Wno-int-in-bool-context)
   endif()
 
-  if(CMAKE_COMPILER_IS_GNUCC)
+  if(NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     # these flags are not known to clang
     set(CMAKE_GCC_FLAGS "-Wl,--no-as-needed")
     set(CMAKE_RDYNAMIC_FLAG "-rdynamic")
-  endif(CMAKE_COMPILER_IS_GNUCC)
+  endif()
 
   if(COMPILE_WASM)
     if(USE_THREADS)
