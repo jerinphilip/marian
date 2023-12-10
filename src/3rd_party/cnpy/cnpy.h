@@ -29,6 +29,7 @@ namespace cnpy {
     struct NpyArray {
         std::vector<char> bytes;
         std::vector<unsigned int> shape;
+        char type;
         unsigned int word_size{1};
         bool fortran_order{0};
 
@@ -58,7 +59,7 @@ namespace cnpy {
     char map_type(const std::type_info& t);
     static inline std::vector<char> create_npy_header(char type, size_t word_size, const unsigned int* shape, const unsigned int ndims);
     template<typename T> std::vector<char> create_npy_header(const T* data, const unsigned int* shape, const unsigned int ndims);
-    void parse_npy_header(FILE* fp,unsigned int& word_size, unsigned int*& shape, unsigned int& ndims, bool& fortran_order);
+    void parse_npy_header(FILE* fp, char &type, unsigned int& word_size, unsigned int*& shape, unsigned int& ndims, bool& fortran_order);
     void parse_zip_footer(FILE* fp, unsigned short& nrecs, unsigned int& global_header_size, unsigned int& global_header_offset);
     npz_t npz_load(std::string fname);
     NpyArrayPtr npz_load(std::string fname, std::string varname);
@@ -93,7 +94,8 @@ namespace cnpy {
             unsigned int word_size, tmp_dims;
             unsigned int* tmp_shape = 0;
             bool fortran_order;
-            parse_npy_header(fp,word_size,tmp_shape,tmp_dims,fortran_order);
+            char type;
+            parse_npy_header(fp, type, word_size,tmp_shape,tmp_dims,fortran_order);
             assert(!fortran_order);
 
             if(word_size != sizeof(T)) {
@@ -233,12 +235,12 @@ namespace cnpy {
     struct NpzItem : public NpyArray
     {
         std::string name; //name of item in .npz file (without .npy)
-        char type;        // type of item
 
         template<typename T>
         NpzItem(const std::string& name, const std::vector<T>& data, const std::vector<unsigned int>& dataShape) :
-            name(name), type(map_type(typeid(T)))
+            name(name)
         {
+            type = map_type(typeid(T));
             shape = dataShape;
             word_size = sizeof(T);
             bytes.resize(data.size() * word_size);
@@ -247,8 +249,9 @@ namespace cnpy {
         }
 
         NpzItem(const std::string& name, const std::string& data, const std::vector<unsigned int>& dataShape) :
-            name(name), type(map_type(typeid(char)))
+            name(name)
         {
+            type = map_type(typeid(char));
             shape = dataShape;
             word_size = sizeof(char);
             std::copy(data.data(), data.data() + data.size() + 1, bytes.begin());
@@ -258,8 +261,9 @@ namespace cnpy {
                 const std::vector<char>& data,
                 const std::vector<unsigned int>& dataShape,
                 char type_, size_t word_size_) :
-            name(name), type(type_)
+            name(name)
         {
+            type = type_;
             shape = dataShape;
             word_size = (unsigned int)word_size_;
             bytes.resize(data.size());
