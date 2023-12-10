@@ -240,7 +240,11 @@ if (NOT COMPILE_LIBRARY_ONLY)
   set_target_properties(marian_conv PROPERTIES OUTPUT_NAME marian-conv)
   target_compile_options(marian_conv PRIVATE ${ALL_WARNINGS})
 
-  list(APPEND EXECUTABLES marian_train marian_scorer marian_vocab marian_conv)
+  add_executable(marian_alphas command/marian_alphas.cpp)
+  set_target_properties(marian_alphas PROPERTIES OUTPUT_NAME marian-alphas)
+  target_compile_options(marian_alphas PRIVATE ${ALL_WARNINGS})
+
+  list(APPEND EXECUTABLES marian_train marian_scorer marian_vocab marian_conv marian_alphas)
 
   # marian.zip and marian.tgz
   # This combines marian, marian_decoder in a single ZIP or TAR file for
