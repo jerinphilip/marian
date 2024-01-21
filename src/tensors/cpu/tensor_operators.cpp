@@ -1107,20 +1107,17 @@ void LayerNormalizationImpl(float* out,
                             float eps,
                             int rows,
                             int cols) {
-#pragma omp parallel for
   for(int j = 0; j < rows; ++j) {
     float* so = out + j * cols;
     const float* sp = in + j * cols;
 
     float sum = 0.f;
-#pragma omp simd reduction(+ : sum)
     for(int i = 0; i < cols; ++i) {
       sum += sp[i];
     }
 
     float mean = sum / cols;
     float sqSum = 0.f;
-#pragma omp simd reduction(+ : sqSum)
     for(int i = 0; i < cols; ++i) {
       float ex = sp[i] - mean;
       sqSum += ex * ex;
@@ -1128,7 +1125,6 @@ void LayerNormalizationImpl(float* out,
 
     float sigma = std::sqrt(sqSum / cols + eps);
 
-#pragma omp simd
     for(int i = 0; i < cols; ++i) {
       float t = alpha[alphaStride * i] * ((sp[i] - mean) / sigma);
       if(hasBeta)

@@ -69,7 +69,10 @@ typedef std::vector<std::function<void()>> NodeOps;
 // it has to be in the function to keep scope.
 // gcc supports "-fassociative-math" that has to be outside a function.
 // I didn't find a MSVC equivalent.
-#if defined(_MSC_VER)
+#if 1
+#define MARIAN_FFAST_MATH_BEGIN
+#define MARIAN_FFAST_MATH_END
+#elif defined(_MSC_VER)
 #define MARIAN_FFAST_MATH_BEGIN __pragma(float_control(precise, off, push))
 #define MARIAN_FFAST_MATH_END __pragma(float_control(pop))
 #elif defined(__clang__)
